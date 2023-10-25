@@ -1,0 +1,11 @@
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/bin/Debug/net5.0/Calori.Domain.deps.json
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/bin/Debug/net5.0/Calori.Domain.dll
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/bin/Debug/net5.0/Calori.Domain.pdb
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/obj/Debug/net5.0/Calori.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/obj/Debug/net5.0/Calori.Domain.AssemblyInfoInputs.cache
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/obj/Debug/net5.0/Calori.Domain.AssemblyInfo.cs
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/obj/Debug/net5.0/Calori.Domain.csproj.CoreCompileInputs.cache
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/obj/Debug/net5.0/Calori.Domain.dll
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/obj/Debug/net5.0/refint/Calori.Domain.dll
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/obj/Debug/net5.0/Calori.Domain.pdb
+/Users/evgeny/Documents/Calori/Test1/Calori.Backend/Calori.Domain/obj/Debug/net5.0/ref/Calori.Domain.dll

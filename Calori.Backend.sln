@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{81717CF2-DF7A-4239-8106-5E8866889241}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calori.Application", "Calori.Application\Calori.Application.csproj", "{9728D82E-D020-447D-9CC2-F82559EBEB7B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{27F52B1B-DD22-4BF6-B659-93C5713DD2A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{0EBEFA65-509D-4757-9C12-A50A3DD22349}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6E607256-DC89-42A7-AD5A-1ABB00EBA03D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calori.Domain", "Calori.Domain\Calori.Domain.csproj", "{2B65759B-745E-4DEB-92AE-C2D7320030DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calori.Persistence", "Calori.Persistence\Calori.Persistence.csproj", "{CDB5FEC4-86AD-4AD7-A245-46B241970747}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calori.WebApi", "Calori.WebApi\Calori.WebApi.csproj", "{ACDE0DA8-C14D-4BF3-A801-C1FA80C647DC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9728D82E-D020-447D-9CC2-F82559EBEB7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9728D82E-D020-447D-9CC2-F82559EBEB7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9728D82E-D020-447D-9CC2-F82559EBEB7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9728D82E-D020-447D-9CC2-F82559EBEB7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B65759B-745E-4DEB-92AE-C2D7320030DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B65759B-745E-4DEB-92AE-C2D7320030DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B65759B-745E-4DEB-92AE-C2D7320030DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B65759B-745E-4DEB-92AE-C2D7320030DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB5FEC4-86AD-4AD7-A245-46B241970747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB5FEC4-86AD-4AD7-A245-46B241970747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB5FEC4-86AD-4AD7-A245-46B241970747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB5FEC4-86AD-4AD7-A245-46B241970747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACDE0DA8-C14D-4BF3-A801-C1FA80C647DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACDE0DA8-C14D-4BF3-A801-C1FA80C647DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACDE0DA8-C14D-4BF3-A801-C1FA80C647DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACDE0DA8-C14D-4BF3-A801-C1FA80C647DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9728D82E-D020-447D-9CC2-F82559EBEB7B} = {81717CF2-DF7A-4239-8106-5E8866889241}
+		{2B65759B-745E-4DEB-92AE-C2D7320030DA} = {81717CF2-DF7A-4239-8106-5E8866889241}
+		{CDB5FEC4-86AD-4AD7-A245-46B241970747} = {27F52B1B-DD22-4BF6-B659-93C5713DD2A8}
+		{ACDE0DA8-C14D-4BF3-A801-C1FA80C647DC} = {0EBEFA65-509D-4757-9C12-A50A3DD22349}
+	EndGlobalSection
+EndGlobal
