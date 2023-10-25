@@ -24,7 +24,7 @@ namespace Calori.Domain.Models.ApplicationModels
     
         public ApplicationBodyParameters ApplicationBodyParameters { get; set; }
     
-        public int? ApplicationAllergyId { get; set; }
+        //public int? ApplicationAllergyId { get; set; }
     
         public List<ApplicationAllergy> ApplicationAllergies { get; set; }
     

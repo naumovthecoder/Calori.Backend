@@ -9,10 +9,10 @@ namespace Calori.Persistence.EntityTypeConfigurations
         public void Configure(EntityTypeBuilder<ApplicationAllergy> builder)
         {
             builder.HasKey(aa => aa.Id);
-        
-            builder.HasOne(aa => aa.Application)
-                .WithMany(app => app.ApplicationAllergies)
-                .HasForeignKey(aa => aa.ApplicationId);
+            
+            // builder.HasOne(aa => aa.ApplicationId)
+            //     .WithMany(app => app.ApplicationAllergies)
+            //     .HasForeignKey(aa => aa.ApplicationId);
         
             builder.Property(aa => aa.Allergy)
                 .IsRequired();

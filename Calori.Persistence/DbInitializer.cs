@@ -2,7 +2,7 @@ namespace Calori.Persistence
 {
     public class DbInitializer
     {
-        public void Initialize(CaloriDbContext context)
+        public static void Initialize(CaloriDbContext context)
         {
             context.Database.EnsureCreated();
         }

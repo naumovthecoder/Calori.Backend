@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Calori.Application.CaloriApplications.CalculatorService;
 using Calori.Application.Interfaces;
 using Calori.Domain.Models.ApplicationModels;
 using Calori.Domain.Models.Enums;
@@ -29,6 +30,20 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             var allergies = request.Allergies;
             var anotherAllergy = request.AnotherAllergy;
 
+            var calculator = new ApplicationCalculator();
+            var calculated = calculator.CalculateApplicationParameters(request);
+
+            var appBodyParameters = new ApplicationBodyParameters
+            {
+                MinWeight = calculated.MinWeight,
+                MaxWeight = calculated.MaxWeight,
+                BMI = calculated.BMI,
+                BMR = calculated.BMR
+            };
+            
+            _dbContext.ApplicationBodyParameters.Add(appBodyParameters);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
             var application = new CaloriApplication
             {
                 GenderId = gender,
@@ -39,7 +54,8 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
                 Email = email,
                 ActivityLevelId = activity,
                 CreatedAt = DateTime.Now,
-                AnotherAllergy = anotherAllergy
+                AnotherAllergy = anotherAllergy,
+                ApplicationBodyParametersId = appBodyParameters.Id
             };
         
             _dbContext.CaloriApplications.Add(application);

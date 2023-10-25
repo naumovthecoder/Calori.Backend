@@ -20,7 +20,7 @@ namespace Calori.Persistence.EntityTypeConfigurations
                 .WithOne()
                 .HasForeignKey("ApplicationId");
 
-            builder.Property(app => app.ApplicationAllergyId).HasColumnName("ApplicationAllergyId");
+            // builder.Property(app => app.ApplicationAllergyId).HasColumnName("ApplicationAllergyId");
 
         }
     }

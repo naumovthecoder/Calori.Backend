@@ -8,7 +8,7 @@ namespace Calori.Domain.Models.ApplicationModels
 
         public int? ApplicationId { get; set; }
         
-        public CaloriApplication Application { get; set; }
+        //public CaloriApplication Application { get; set; }
 
         public Allergies? Allergy { get; set; }
     }

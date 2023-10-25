@@ -8,16 +8,13 @@
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Calori.WebApi.pdb
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/AutoMapper.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/MediatR.dll
-/Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/MediatR.Contracts.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/MediatR.Extensions.Microsoft.DependencyInjection.dll
-/Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.Bcl.AsyncInterfaces.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.Data.SqlClient.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.EntityFrameworkCore.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.EntityFrameworkCore.Abstractions.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.EntityFrameworkCore.Relational.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.EntityFrameworkCore.SqlServer.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.Extensions.DependencyInjection.dll
-/Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.Identity.Client.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.IdentityModel.JsonWebTokens.dll
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/Microsoft.IdentityModel.Logging.dll
@@ -73,3 +70,4 @@
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/obj/Debug/net5.0/Calori.WebApi.pdb
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/obj/Debug/net5.0/Calori.WebApi.genruntimeconfig.cache
 /Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/obj/Debug/net5.0/ref/Calori.WebApi.dll
+/Users/evgeny/Desktop/Calori.Backend/Calori.WebApi/bin/Debug/net5.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll

@@ -9,13 +9,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="12.0.1" />
-      <PackageReference Include="MediatR" Version="12.1.1" />
-      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
+      <PackageReference Include="AutoMapper" Version="10.1.1" />
+      <PackageReference Include="MediatR" Version="9.0.0" />
+      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="CaloriApplications\Queries\GetCaloriApplication\" />
       <Folder Include="Common\Behaviors\" />
     </ItemGroup>
 

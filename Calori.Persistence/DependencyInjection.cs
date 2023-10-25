@@ -10,10 +10,10 @@ namespace Calori.Persistence
         public static IServiceCollection AddPersistence(this IServiceCollection
             services, IConfiguration configuration)
         {
-            // var connectionString = configuration["DbConnection"];
+            var connectionString = configuration["DbConnection"];
             services.AddDbContext<CaloriDbContext>(options =>
             {
-                options.UseSqlServer(@"Data Source=localhost;Initial Catalog=Calori;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;");
+                options.UseSqlServer(connectionString);
             });
             services.AddScoped<ICaloriDbContext>(provider => provider.GetService<CaloriDbContext>());
             return services;
