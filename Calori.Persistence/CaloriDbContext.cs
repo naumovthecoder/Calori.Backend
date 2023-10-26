@@ -1,5 +1,6 @@
 using Calori.Application.Interfaces;
 using Calori.Domain.Models.ApplicationModels;
+using Calori.Domain.Models.CaloriAccount;
 using Calori.Persistence.EntityTypeConfigurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,9 +11,8 @@ namespace Calori.Persistence
         public DbSet<CaloriApplication> CaloriApplications { get; set; }
         public DbSet<ApplicationBodyParameters> ApplicationBodyParameters { get; set; }
         public DbSet<ApplicationAllergy> ApplicationAllergies { get; set; }
-
+        public DbSet<PersonalSlimmingPlan> PersonalSlimmingPlan { get; set; }
         public CaloriDbContext(DbContextOptions<CaloriDbContext> options) : base(options) { }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new ApplicationConfiguration());

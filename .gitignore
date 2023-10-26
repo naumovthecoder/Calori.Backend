@@ -1,0 +1,13 @@
+# Default ignored files
+.idea
+/Calori.Application/bin/
+/Calori.Application/obj/
+
+/Calori.Domain/bin/
+/Calori.Domain/obj/
+
+/Calori.Persistence/bin/
+/Calori.Persistence/obj/
+
+/Calori.WebApi/bin/
+/Calori.WebApi/obj/

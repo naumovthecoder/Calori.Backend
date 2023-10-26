@@ -33,5 +33,11 @@ namespace Calori.Domain.Models.ApplicationModels
         public DateTime? CreatedAt { get; set; }
     
         public string AnotherAllergy { get; set; } = String.Empty;
+        
+        public int? DailyCalories { get; set; }
+        
+        public int? Ration { get; set; }
+        
+        public int? PersonalSlimmingPlanId { get; set; }
     }
 }

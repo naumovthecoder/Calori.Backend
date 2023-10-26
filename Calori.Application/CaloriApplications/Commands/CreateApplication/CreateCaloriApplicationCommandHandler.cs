@@ -43,6 +43,29 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             
             _dbContext.ApplicationBodyParameters.Add(appBodyParameters);
             await _dbContext.SaveChangesAsync(cancellationToken);
+            
+            var offset = 0.0m;
+
+            switch (activity)
+            {
+                case CaloriActivityLevel.Inactive:
+                    offset = 1.2m;
+                    break;
+                case CaloriActivityLevel.Light:
+                    offset = 1.375m;
+                    break;
+                case CaloriActivityLevel.Moderate:
+                    offset = 1.55m;
+                    break;
+            }
+            
+            var dailyCalories = (int)(appBodyParameters.BMR * offset ?? 0);
+            
+            var deduction = 450;
+        
+            int[] rations = { 2500, 2000, 1500 };
+        
+            var closestRation = FindClosestRation(dailyCalories - deduction, rations);
 
             var application = new CaloriApplication
             {
@@ -55,7 +78,9 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
                 ActivityLevelId = activity,
                 CreatedAt = DateTime.Now,
                 AnotherAllergy = anotherAllergy,
-                ApplicationBodyParametersId = appBodyParameters.Id
+                ApplicationBodyParametersId = appBodyParameters.Id,
+                DailyCalories = dailyCalories,
+                Ration = closestRation
             };
         
             _dbContext.CaloriApplications.Add(application);
@@ -78,6 +103,24 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return application;
+        }
+        
+        static int FindClosestRation(int targetCalories, int[] rations)
+        {
+            int closestRation = rations[0];
+            int minDifference = Math.Abs(targetCalories - rations[0]);
+
+            foreach (int ration in rations)
+            {
+                int difference = Math.Abs(targetCalories - ration);
+                if (difference < minDifference)
+                {
+                    minDifference = difference;
+                    closestRation = ration;
+                }
+            }
+
+            return closestRation;
         }
     }
 }

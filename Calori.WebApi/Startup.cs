@@ -63,6 +63,12 @@ namespace Calori.WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Calori.WebApi v1"));
             }
             
+            // ONLY DEV
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Calori.WebApi v1"));
+            // ONLY DEV
+            
             app.UseRouting();
             // поменял местами эти 
             app.UseHttpsRedirection();
