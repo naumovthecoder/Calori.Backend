@@ -7,6 +7,7 @@ WORKDIR /src
 COPY ["Calori.WebApi/Calori.WebApi.csproj", "Calori.WebApi/"]
 COPY ["Calori.Persistence/Calori.Persistence.csproj", "Calori.Persistence/"]
 COPY ["Calori.Domain/Calori.Domain.csproj", "Calori.Domain/"]
+COPY ["Calori.EmailService/Calori.EmailService.csproj", "Calori.EmailService/"]
 COPY ["Calori.Application/Calori.Application.csproj", "Calori.Application/"]
 RUN dotnet restore "Calori.WebApi/Calori.WebApi.csproj"
 COPY . .
