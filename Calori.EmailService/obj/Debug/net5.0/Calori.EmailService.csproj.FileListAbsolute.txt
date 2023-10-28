@@ -1,0 +1,17 @@
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/bin/Debug/net5.0/Calori.EmailService.deps.json
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/bin/Debug/net5.0/Calori.EmailService.dll
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/bin/Debug/net5.0/Calori.EmailService.pdb
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/bin/Debug/net5.0/Calori.Application.dll
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/bin/Debug/net5.0/Calori.Domain.dll
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/bin/Debug/net5.0/Calori.Application.pdb
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/bin/Debug/net5.0/Calori.Domain.pdb
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/Calori.EmailService.csproj.AssemblyReference.cache
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/Calori.EmailService.GeneratedMSBuildEditorConfig.editorconfig
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/Calori.EmailService.AssemblyInfoInputs.cache
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/Calori.EmailService.AssemblyInfo.cs
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/Calori.EmailService.csproj.CoreCompileInputs.cache
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/Calori.EmailService.csproj.CopyComplete
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/Calori.EmailService.dll
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/refint/Calori.EmailService.dll
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/Calori.EmailService.pdb
+/Users/evgeny/Desktop/Calori.Backend/Calori.EmailService/obj/Debug/net5.0/ref/Calori.EmailService.dll

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Calori.Domain.Models.CaloriAccount;
 using Calori.Domain.Models.Enums;
 
 namespace Calori.Domain.Models.ApplicationModels
@@ -39,5 +40,8 @@ namespace Calori.Domain.Models.ApplicationModels
         public int? Ration { get; set; }
         
         public int? PersonalSlimmingPlanId { get; set; }
+        
+        public PersonalSlimmingPlan PersonalSlimmingPlan { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

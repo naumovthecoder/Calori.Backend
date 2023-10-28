@@ -20,9 +20,17 @@ namespace Calori.Application.CaloriApplications.CalculatorService
                 result.MinWeight = (int)(18.5m * heightM * heightM);
 
                 result.BMI = bmi;
-            
-                result.BMR = 
-                    (66.47m + (13.75m * weightKg) + (5.0m * (heightM * 100)) - (6.74m * request.Age))!;
+                
+                if (request.Gender == 0)
+                {
+                    result.BMR = 
+                        (66.47m + (13.75m * weightKg) + (5.0m * (heightM * 100)) - (6.74m * request.Age))!;
+                }
+                else
+                {
+                    result.BMR = 
+                        (655.1m + (9.6m * weightKg) + (1.85m * (heightM * 100)) - (4.68m * request.Age))!;
+                }
             }
             else
             {

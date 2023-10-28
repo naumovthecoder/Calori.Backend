@@ -11,3 +11,6 @@
 
 /Calori.WebApi/bin/
 /Calori.WebApi/obj/
+
+/Calori.EmailService/bin/
+/Calori.EmailService/obj/
