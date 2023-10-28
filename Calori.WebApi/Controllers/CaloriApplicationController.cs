@@ -1,26 +1,24 @@
-using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Calori.Application.CaloriApplications.Commands.CreateApplication;
 using Calori.Application.CaloriApplications.Commands.UpdateApplication;
 using Calori.Application.CaloriApplications.Queries;
-using Calori.Application.PersonalPlan.Commands.UpdatePersonalSlimmingPlan;
 using Calori.Domain.Models.ApplicationModels;
-using Calori.Domain.Models.CaloriAccount;
 using Calori.WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Calori.WebApi.Controllers
 {
-    [Route("api")]
+    [Route("api/application")]
     public class CaloriApplicationController : BaseController
     {
         private readonly IMapper _mapper;
 
         public CaloriApplicationController(IMapper mapper) => _mapper = mapper;
         
-        [HttpPost("application")]
+        [HttpPost]
         public async Task<ActionResult<CaloriApplication>> Create([FromBody] CreateCaloriApplicationDto dto)
         {
             var command = _mapper.Map<CreateCaloriApplicationCommand>(dto);
@@ -29,7 +27,7 @@ namespace Calori.WebApi.Controllers
             return Ok(application);
         }
         
-        [HttpPost("application/weight")]
+        [HttpPost("weight")]
         public async Task<ActionResult<RecommendedIdealWeightDto>> GetIdealWeight(
             [FromBody] CalculateMinMaxWeightDto dto)
         {
@@ -50,7 +48,8 @@ namespace Calori.WebApi.Controllers
             return result;
         }
         
-        [HttpPut("application")]
+        [HttpPut]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Update([FromBody] UpdateApplicationDto dto)
         {
@@ -59,7 +58,8 @@ namespace Calori.WebApi.Controllers
             return NoContent();
         }
         
-        [HttpGet("application/{id}")]
+        [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ApplicationDetailsVm>> Get(int id)
         {

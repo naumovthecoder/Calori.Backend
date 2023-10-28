@@ -6,6 +6,7 @@ using Calori.Application.PersonalPlan.Queries;
 using Calori.Domain.Models.ApplicationModels;
 using Calori.Domain.Models.PersonalPlan.Requests;
 using Calori.WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ namespace Calori.WebApi.Controllers
         public PersonalPlanController(IMapper mapper) => _mapper = mapper;
         
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PersonalPlanDetailsVm>> Get(int id)
         {
@@ -32,6 +34,7 @@ namespace Calori.WebApi.Controllers
         }
         
         [HttpPut]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Update([FromBody] UpdatePersonalPlanDto dto)
         {
