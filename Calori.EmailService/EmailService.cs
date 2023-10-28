@@ -23,30 +23,36 @@ namespace Calori.EmailService
 
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
-            using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
+            using SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort);
+            smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+            smtpClient.EnableSsl = true;
+
+            var mailMessage = new MailMessage
             {
-                smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
-                smtpClient.EnableSsl = true;
-
-                MailMessage mailMessage = new MailMessage
-                {
-                    From = new MailAddress(smtpUsername),
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-
-                mailMessage.To.Add(toEmail);
-
-                try
-                {
-                    await smtpClient.SendMailAsync(mailMessage);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error when sending an e-mail: {ex.Message}");
-                }
+                From = new MailAddress(smtpUsername),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
+            mailMessage.To.Add(toEmail);
+            try
+            {
+                await smtpClient.SendMailAsync(mailMessage);
             }
+            catch (Exception ex)
+            {
+                throw new EmailResponseException(
+                    $"Error when sending an e-mail. Message - {ex.Message}");
+            }
+        }
+    }
+
+    public class EmailResponseException : Exception
+    {
+        private readonly string _message;
+        public EmailResponseException(string message)
+        {
+            _message = message;
         }
     }
 }

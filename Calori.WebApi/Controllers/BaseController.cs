@@ -13,9 +13,5 @@ namespace Calori.WebApi.Controllers
         private IMediator _mediator;
         protected IMediator Mediator =>
             _mediator ??= HttpContext.RequestServices.GetService<IMediator>()!;
-
-        internal int UserId => !User.Identity.IsAuthenticated
-            ? 0
-            : int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
     }
 }
