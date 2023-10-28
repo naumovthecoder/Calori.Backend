@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Calori.Application;
 using Calori.Application.Common.Mappings;
+using Calori.Application.Interfaces;
+using Calori.EmailService;
 using Calori.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,11 +34,12 @@ namespace Calori.WebApi
             services.AddAutoMapper(config =>
             {
                 config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
-                config.AddProfile(new AssemblyMappingProfile(typeof(CaloriDbContext).Assembly));
+                config.AddProfile(new AssemblyMappingProfile(typeof(ICaloriDbContext).Assembly));
             });
 
             services.AddApplication();
             services.AddPersistence(Configuration);
+            // services.AddEmailService(Configuration);
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>

@@ -12,6 +12,7 @@ namespace Calori.Application.Interfaces
         DbSet<ApplicationBodyParameters> ApplicationBodyParameters { get; set; }
         DbSet<ApplicationAllergy> ApplicationAllergies { get; set; }
         DbSet<PersonalSlimmingPlan> PersonalSlimmingPlan { get; set; }
+        DbSet<CaloriSlimmingPlan> CaloriSlimmingPlan { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

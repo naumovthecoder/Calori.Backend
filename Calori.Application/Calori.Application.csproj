@@ -16,7 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="CaloriApplications\Queries\" />
       <Folder Include="Common\Behaviors\" />
     </ItemGroup>
 

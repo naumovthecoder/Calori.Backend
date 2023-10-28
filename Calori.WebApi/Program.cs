@@ -40,7 +40,7 @@ namespace Calori.WebApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://*:80");
+                    //webBuilder.UseUrls("http://*:80");
                 });
     }
 }

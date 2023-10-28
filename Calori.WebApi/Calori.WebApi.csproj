@@ -11,6 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Calori.Application\Calori.Application.csproj" />
+      <ProjectReference Include="..\Calori.EmailService\Calori.EmailService.csproj" />
       <ProjectReference Include="..\Calori.Persistence\Calori.Persistence.csproj" />
     </ItemGroup>
 
