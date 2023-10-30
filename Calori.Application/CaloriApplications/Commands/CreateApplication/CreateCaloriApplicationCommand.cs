@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Calori.Application.CaloriApplications.Commands.CreateApplication
 {
-    public class CreateCaloriApplicationCommand : IRequest<CaloriApplication>
+    public class CreateCaloriApplicationCommand : IRequest<CreateApplicationResult>
     {
         public CaloriGender? Gender { get; set; }
         public decimal? Weight { get; set; }

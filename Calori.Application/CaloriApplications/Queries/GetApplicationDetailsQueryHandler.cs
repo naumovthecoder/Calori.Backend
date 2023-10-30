@@ -1,10 +1,10 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Calori.Application.Common.Exceptions;
 using Calori.Application.Interfaces;
-using Calori.Application.PersonalPlan.Queries;
-using Calori.Domain.Models.CaloriAccount;
+using Calori.Domain.Models.ApplicationModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,16 +22,31 @@ namespace Calori.Application.CaloriApplications.Queries
         public async Task<ApplicationDetailsVm> Handle(GetApplicationDetailsQuery request,
             CancellationToken cancellationToken)
         {
-            var entity = await _dbContext.CaloriApplications
+            var application = await _dbContext.CaloriApplications
                 .FirstOrDefaultAsync(a =>
-                    a.Id == request.Id, cancellationToken);
+                    a.Email.ToLower() == request.Email.ToLower(), cancellationToken);
+
+            var applicationAllergies = await _dbContext.ApplicationAllergies
+                .Where(a => a.ApplicationId == application.Id).ToListAsync();
+
+            var personalPlan = await _dbContext.PersonalSlimmingPlan
+                .FirstOrDefaultAsync(p =>
+                    p.Id == application.PersonalSlimmingPlanId, cancellationToken);
             
-            if (entity == null)
+            var caloriPlan = await _dbContext.CaloriSlimmingPlan
+                .FirstOrDefaultAsync(cp =>
+                    cp.Id == personalPlan.CaloriSlimmingPlanId, cancellationToken);
+            
+            personalPlan.CaloriSlimmingPlan = caloriPlan;
+            application.PersonalSlimmingPlan = personalPlan;
+            application.ApplicationAllergies = applicationAllergies;
+
+            if (application == null)
             {
-                throw new NotFoundException(nameof(PersonalSlimmingPlan), request.Id);
+                throw new NotFoundException(nameof(CaloriApplication), request.Email);
             }
 
-            return _mapper.Map<ApplicationDetailsVm>(entity);
+            return _mapper.Map<ApplicationDetailsVm>(application);
         }
     }
 }

@@ -43,5 +43,7 @@ namespace Calori.Domain.Models.ApplicationModels
         
         public PersonalSlimmingPlan PersonalSlimmingPlan { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        
+        public string UserId { get; set; }
     }
 }
