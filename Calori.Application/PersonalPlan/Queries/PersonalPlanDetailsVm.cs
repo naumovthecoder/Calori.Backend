@@ -7,7 +7,6 @@ namespace Calori.Application.PersonalPlan.Queries
 {
     public class PersonalPlanDetailsVm : IMapWith<PersonalSlimmingPlan>
     {
-        public int Id { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? FinishDate { get; set; }
         public int? WeekNumber { get; set; }

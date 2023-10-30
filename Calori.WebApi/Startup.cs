@@ -4,8 +4,6 @@ using Calori.Application;
 using Calori.Application.Common.Mappings;
 using Calori.Application.Interfaces;
 using Calori.Domain.Models.Auth;
-using Calori.Persistence;
-// using Calori.WebApi.IdentityAuth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,7 +35,7 @@ namespace Calori.WebApi
             });
 
             services.AddApplication();
-            services.AddPersistence(Configuration);
+            //services.AddPersistence(Configuration);
             // services.AddEmailService(Configuration);
             services.AddCors(options =>
             {
@@ -48,9 +46,15 @@ namespace Calori.WebApi
                     policy.AllowAnyOrigin();
                 });
             });
+            
+            services.AddSingleton<IEmailService, EmailService.EmailService>();
+            services.AddScoped<ICaloriDbContext>(provider => provider.GetService<CaloriDbContext>());
+
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(Configuration["DbConnectionIdentity"] ?? string.Empty));
+            services.AddDbContext<CaloriDbContext>(options =>
+                options.UseSqlite(Configuration["DbConnectionSqlLite"] ?? string.Empty));
 
             services.AddControllers();
             services.AddSwaggerGen(swagger =>

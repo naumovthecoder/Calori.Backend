@@ -8,7 +8,6 @@ namespace Calori.WebApi.Models
 {
     public class UpdatePersonalPlanDto: IMapWith<UpdatePersonalSlimmingPlanCommand>
     {
-        public int Id { get; set; }
         public DateTime? StartDate { get; set; }
         public int? WeekNumber { get; set; }
         public decimal? Weight { get; set; }

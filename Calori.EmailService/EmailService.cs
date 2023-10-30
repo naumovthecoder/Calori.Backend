@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Calori.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace Calori.EmailService
 {
@@ -12,37 +13,46 @@ namespace Calori.EmailService
         private readonly int smtpPort;
         private readonly string smtpUsername;
         private readonly string smtpPassword;
+        private readonly IConfiguration _configuration;
 
-        public EmailService(string smtpServer, int smtpPort, string smtpUsername, string smtpPassword)
+        public EmailService(IConfiguration configuration)
         {
-            this.smtpServer = smtpServer;
-            this.smtpPort = smtpPort;
-            this.smtpUsername = smtpUsername;
-            this.smtpPassword = smtpPassword;
+            _configuration = configuration;
+            
+            smtpServer = _configuration["EmailSettings:SmtpServer"];
+            smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"]);
+            smtpUsername = _configuration["EmailSettings:SmtpUsername"];
+            smtpPassword = _configuration["EmailSettings:SmtpPassword"];
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
-            using SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort);
-            smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
-            smtpClient.EnableSsl = true;
+            bool enableSSL = true;
 
-            var mailMessage = new MailMessage
+            SmtpClient client = new SmtpClient(smtpServer)
+            {
+                Port = smtpPort,
+                Credentials = new NetworkCredential(smtpUsername, smtpPassword),
+                EnableSsl = enableSSL,
+            };
+
+            MailMessage message = new MailMessage
             {
                 From = new MailAddress(smtpUsername),
                 Subject = subject,
                 Body = body,
-                IsBodyHtml = true
             };
-            mailMessage.To.Add(toEmail);
+
+            message.To.Add(toEmail);
+
             try
             {
-                await smtpClient.SendMailAsync(mailMessage);
+                client.Send(message);
+                Console.WriteLine("Письмо успешно отправлено.");
             }
             catch (Exception ex)
             {
-                throw new EmailResponseException(
-                    $"Error when sending an e-mail. Message - {ex.Message}");
+                Console.WriteLine("Ошибка отправки письма: " + ex.Message);
             }
         }
     }

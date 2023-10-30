@@ -8,7 +8,7 @@ namespace Calori.WebApi.Models
 {
     public class UpdateApplicationDto : IMapWith<UpdateApplicationCommand>
     {
-        public int Id { get; set; }
+        // public int Id { get; set; }
         public CaloriGender Gender { get; set; }
         public decimal Weight { get; set; }
         public int Height { get; set; }

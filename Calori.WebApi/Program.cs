@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Calori.Persistence;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Calori.WebApi
 {
@@ -23,8 +19,11 @@ namespace Calori.WebApi
                 var serviceProvider = scope.ServiceProvider;
                 try
                 {
+                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    db.Database.Migrate();
                     var context = serviceProvider.GetRequiredService<CaloriDbContext>();
-                    DbInitializer.Initialize(context);
+                    context.Database.Migrate();
+                    //DbInitializer.Initialize(context);
                 }
                 catch (Exception exception)
                 {

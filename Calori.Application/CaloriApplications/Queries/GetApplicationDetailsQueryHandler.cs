@@ -36,10 +36,15 @@ namespace Calori.Application.CaloriApplications.Queries
             var caloriPlan = await _dbContext.CaloriSlimmingPlan
                 .FirstOrDefaultAsync(cp =>
                     cp.Id == personalPlan.CaloriSlimmingPlanId, cancellationToken);
+
+            var bodyParameters = await _dbContext.ApplicationBodyParameters
+                .FirstOrDefaultAsync(p => 
+                    p.Id == application.ApplicationBodyParametersId);
             
             personalPlan.CaloriSlimmingPlan = caloriPlan;
             application.PersonalSlimmingPlan = personalPlan;
             application.ApplicationAllergies = applicationAllergies;
+            application.ApplicationBodyParameters = bodyParameters;
 
             if (application == null)
             {

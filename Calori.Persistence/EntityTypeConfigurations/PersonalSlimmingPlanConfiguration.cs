@@ -12,9 +12,9 @@ namespace Calori.Persistence.EntityTypeConfigurations
             builder.HasKey(app => app.Id);
             builder.HasIndex(app => app.Id).IsUnique();
             
-            builder.HasOne(app => app.CaloriSlimmingPlan)
-                .WithOne()
-                .HasForeignKey<PersonalSlimmingPlan>(app => app.CaloriSlimmingPlanId);
+            // builder.HasOne(app => app.CaloriSlimmingPlan)
+            //     .WithOne()
+            //     .HasForeignKey<PersonalSlimmingPlan>(app => app.CaloriSlimmingPlanId);
         }
     }
 }

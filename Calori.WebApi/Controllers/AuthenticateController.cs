@@ -1,20 +1,21 @@
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using AutoMapper;
 using Calori.Application.Auth.Commands.Login;
+using Calori.Application.Auth.Commands.ResetPassword;
 using Calori.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Calori.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthenticateController : BaseController
     {
         private readonly IMapper _mapper;
 
         public AuthenticateController(IMapper mapper) => _mapper = mapper;
+        
         // private readonly UserManager<ApplicationUser> _userManager;
         // private readonly RoleManager<IdentityRole> _roleManager;
         // private readonly IConfiguration _configuration;
@@ -105,6 +106,16 @@ namespace Calori.WebApi.Controllers
             }
 
             return Unauthorized();
+        }
+        
+        [HttpPost]
+        [Route("password/reset")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPassModel model)
+        {
+            var command = _mapper.Map<ResetPasswordCommand>(model);
+            var response = await Mediator.Send(command);
+
+            return Ok(response.Message);
         }
     }
 }

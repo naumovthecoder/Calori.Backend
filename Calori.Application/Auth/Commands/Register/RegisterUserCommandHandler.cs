@@ -7,9 +7,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Calori.Application.Common.Exceptions;
+using Calori.Application.Interfaces;
 using Calori.Application.Services.UserService;
 using Calori.Domain.Models.Auth;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -21,12 +23,14 @@ namespace Calori.Application.Auth.Commands.Register
     {
         private readonly UserManager<ApplicationUser> _userManager; 
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
         public RegisterUserCommandHandler(UserManager<ApplicationUser> userManager, 
-            IConfiguration configuration)
+            IConfiguration configuration, IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         public async Task<RegisterResponse> Handle(RegisterUserCommand request, 
@@ -58,36 +62,21 @@ namespace Calori.Application.Auth.Commands.Register
             result.Token = new JwtSecurityTokenHandler().WriteToken(token);
             result.User = user;
             
-            // if (!result.Succeeded)
-            //     return StatusCode(StatusCodes.Status500InternalServerError, new Response
-            //     {
-            //         Status = "Error", 
-            //         Messages = errorMessages.ToArray()
-            //     });
-        
-            // var emailService = new EmailService.EmailService(
-            //     smtpServer: _configuration["EmailSettings:SmtpServer"], 
-            //     smtpPort: int.Parse(_configuration["EmailSettings:SmtpPort"]),
-            //     smtpUsername: _configuration["EmailSettings:SmtpUsername"],
-            //     smtpPassword: _configuration["EmailSettings:SmtpPassword"]
-            //     );
-            //
-            // string toEmail = "naumovthecoder@icloud.com";
-            // string subject = "Test Email from Calori.App";
-            // string body = $"Welcome to Calori.App!\nYour Login - {model.Email}\nPassword - {password}";
-            //
-            // try
-            // {
-            //     await emailService.SendEmailAsync(toEmail, subject, body);
-            // }
-            // catch (Exception e)
-            // {
-            //     return StatusCode(StatusCodes.Status500InternalServerError, new Response
-            //     {
-            //         Status = "Error", 
-            //         Messages = new []{$"Error when sending an e-mail. Message - {e.Message}"}
-            //     });
-            // }
+            string subject = "Test Email from Calori.App";
+            string body = $"Welcome to Calori.App!\nYour Login - {user.Email}\nPassword - {password}";
+            
+            try
+            {
+                await _emailService.SendEmailAsync(user.Email, subject, body);
+            }
+            catch (Exception e)
+            {
+                // return StatusCode(StatusCodes.Status500InternalServerError, new Response
+                // {
+                //     Status = "Error", 
+                //     Messages = new []{$"Error when sending an e-mail. Message - {e.Message}"}
+                // });
+            }
         
             // return Ok(new Response { Status = "Success", Messages = new []
             // {

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Calori.Application.CaloriApplications.Commands.CreateApplication;
@@ -22,7 +23,6 @@ namespace Calori.WebApi.Controllers
         public async Task<ActionResult<CaloriApplication>> Create([FromBody] CreateCaloriApplicationDto dto)
         {
             var command = _mapper.Map<CreateCaloriApplicationCommand>(dto);
-            // command.UserId = UserId;
             var application = await Mediator.Send(command);
             return Ok(application);
         }
@@ -51,16 +51,22 @@ namespace Calori.WebApi.Controllers
         [HttpPut]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Update([FromBody] UpdateApplicationDto dto)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<UpdateApplicationResult>> Update([FromBody] UpdateApplicationDto dto)
         {
+            string userEmail = User!.Identity!.Name;
             var command = _mapper.Map<UpdateApplicationCommand>(dto);
-            await Mediator.Send(command);
-            return NoContent();
+            Console.WriteLine(userEmail);
+            // command.ApplicationUser = User;
+            command.IdentityUserEmail = userEmail;
+            var result = await Mediator.Send(command);
+            return result;
         }
         
         [HttpGet]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ApplicationDetailsVm>> Get()
         {
             string userEmail = User!.Identity!.Name;
