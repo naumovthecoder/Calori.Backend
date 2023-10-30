@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Calori.WebApi.IdentityAuth
+namespace Calori.Domain.Models.Auth
 {
     public class ApplicationUser : IdentityUser
     {

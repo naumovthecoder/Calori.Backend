@@ -1,8 +1,8 @@
-using Calori.WebApi.IdentityAuth;
+using Calori.Domain.Models.Auth;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Calori.WebApi.DbContext
+namespace Calori.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

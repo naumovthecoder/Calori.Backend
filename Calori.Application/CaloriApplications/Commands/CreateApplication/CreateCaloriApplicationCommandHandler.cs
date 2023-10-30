@@ -3,10 +3,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Calori.Application.Auth;
+using Calori.Application.Auth.Commands.Register;
 using Calori.Application.CaloriApplications.CalculatorService;
 using Calori.Application.Interfaces;
 using Calori.Application.PersonalPlan.Commands.CreatePersonalSlimmingPlan;
 using Calori.Domain.Models.ApplicationModels;
+using Calori.Domain.Models.Auth;
 using Calori.Domain.Models.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Calori.Application.CaloriApplications.Commands.CreateApplication
 {
     public class CreateCaloriApplicationCommandHandler 
-        : IRequestHandler<CreateCaloriApplicationCommand, CaloriApplication>
+        : IRequestHandler<CreateCaloriApplicationCommand, CreateApplicationResult>
     {
         private readonly ICaloriDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -27,9 +30,24 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             _mediator = mediator;
         }
 
-        public async Task<CaloriApplication> Handle(CreateCaloriApplicationCommand request,
+        public async Task<CreateApplicationResult> Handle(CreateCaloriApplicationCommand request,
             CancellationToken cancellationToken)
         {
+            var createApplicationResponse = new CreateApplicationResult();
+            
+            var registerModel = new RegisterModel
+            {
+                Email = request.Email,
+                UserName = request.Email
+            };
+            
+            var registerResponse = await RegisterUser(registerModel);
+
+            if (registerResponse == null)
+            {
+                throw new Exception("Error when register user");
+            }
+            
             var gender = request.Gender;
             var weight = request.Weight;
             var height = request.Height;
@@ -116,6 +134,7 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             var plan = await _mediator.Send(command);
 
             application.PersonalSlimmingPlanId = plan.Id;
+            application.UserId = registerResponse.User.Id;
             
             _dbContext.CaloriApplications.Add(application);
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -135,8 +154,11 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return application;
+            
+            createApplicationResponse.Application = application;
+            createApplicationResponse.Token = registerResponse.Token;
+            
+            return createApplicationResponse;
         }
         
         private int CalculateTargetRation(int currentCalori)
@@ -159,6 +181,14 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             }
 
             return targetRation;
+        }
+
+        private async Task<RegisterResponse> RegisterUser(RegisterModel model)
+        {
+            var command = _mapper.Map<RegisterUserCommand>(model);
+            var response = await _mediator.Send(command);
+
+            return response;
         }
     }
 }

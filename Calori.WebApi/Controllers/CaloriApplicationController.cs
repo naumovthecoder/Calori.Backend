@@ -58,15 +58,16 @@ namespace Calori.WebApi.Controllers
             return NoContent();
         }
         
-        [HttpGet("{id}")]
+        [HttpGet]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApplicationDetailsVm>> Get(int id)
+        public async Task<ActionResult<ApplicationDetailsVm>> Get()
         {
-            //var command = _mapper.Map<CreateCaloriApplicationCommand>(dto);
-            var query = new GetApplicationDetailsQuery()
+            string userEmail = User!.Identity!.Name;
+            
+            var query = new GetApplicationDetailsQuery
             {
-                Id = id
+                Email = userEmail
             };
             var vm = await Mediator.Send(query);
             return Ok(vm);
