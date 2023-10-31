@@ -42,8 +42,6 @@ namespace Calori.Application.Auth.Commands.ResetPassword
             string subject = "Reset Password | CaloriApp";
             string body = $"Your login: {request.Email}\nYour new password: {password}";
             
-            Console.WriteLine(body);
-            
             await _emailService.SendEmailAsync(user.Email, subject, body);
             result.Message = "A new password has been sent to the Email you specified.";
 

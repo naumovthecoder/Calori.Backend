@@ -4,5 +4,6 @@ namespace Calori.Domain.Models.ApplicationModels
     {
         public CaloriApplication Application { get; set; }
         public string Token { get; set; }
+        public string Message { get; set; }
     }
 }

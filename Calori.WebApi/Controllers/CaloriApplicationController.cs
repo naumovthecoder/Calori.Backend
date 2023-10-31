@@ -1,13 +1,17 @@
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Calori.Application.Auth.Commands.RemoveAllUsers;
 using Calori.Application.CaloriApplications.Commands.CreateApplication;
 using Calori.Application.CaloriApplications.Commands.UpdateApplication;
 using Calori.Application.CaloriApplications.Queries;
 using Calori.Domain.Models.ApplicationModels;
+using Calori.Domain.Models.Auth;
 using Calori.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Calori.WebApi.Controllers
@@ -16,12 +20,29 @@ namespace Calori.WebApi.Controllers
     public class CaloriApplicationController : BaseController
     {
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CaloriApplicationController(IMapper mapper) => _mapper = mapper;
+        public CaloriApplicationController(IMapper mapper, UserManager<ApplicationUser> userManager)
+        {
+            _mapper = mapper;
+            _userManager = userManager;
+        }
         
         [HttpPost]
         public async Task<ActionResult<CaloriApplication>> Create([FromBody] CreateCaloriApplicationDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+
+            if (user != null)
+            {
+                return StatusCode((int)HttpStatusCode.Conflict, "User with this email already exists.");
+            }
+
             var command = _mapper.Map<CreateCaloriApplicationCommand>(dto);
             var application = await Mediator.Send(command);
             return Ok(application);
@@ -77,6 +98,16 @@ namespace Calori.WebApi.Controllers
             };
             var vm = await Mediator.Send(query);
             return Ok(vm);
+        }
+        
+        [HttpPost("users/removeall")]
+        public async Task<ActionResult> RemoveAllUsers()
+        {
+            
+            var command = _mapper.Map<RemoveAllUsersCommand>(new RemoveAllUsersCommand());
+            var result = await Mediator.Send(command);
+
+            return Ok(result.Message);
         }
     }
 }

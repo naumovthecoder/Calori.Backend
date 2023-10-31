@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "80fe+xaim/zlYkyWT4CdiE2RGNDI6nGDHjdmx9iF3+D5IOO+vDJcZDE2JwFRRSLDZZU4/VPb8ngaDJIdlIxA1Q==",
+  "dgSpecHash": "ay39jU7EcDW5jeO0uZkm4phV1Q9JR3lDNCE5LMSi/UT1ztxTpLZ567O9x1SLZbBaAW0QJRY3EPR3VnHtVaPefg==",
   "success": true,
-  "projectFilePath": "/Users/evgeny/Desktop/Calori.Backend/Calori.EmailRabbitMQReceiver/Calori.EmailRabbitMQReceiver.csproj",
+  "projectFilePath": "/Users/evgeny/Desktop/Calori.Backend/EmailReceiver/EmailMQReceiver/Calori.EmailRabbitMQReceiver.csproj",
   "expectedPackageFiles": [
     "/Users/evgeny/.nuget/packages/rabbitmq.client/6.6.0/rabbitmq.client.6.6.0.nupkg.sha512",
     "/Users/evgeny/.nuget/packages/system.memory/4.5.5/system.memory.4.5.5.nupkg.sha512",

@@ -4,6 +4,7 @@ using AutoMapper;
 using Calori.Application.Auth.Commands.Login;
 using Calori.Application.Auth.Commands.ResetPassword;
 using Calori.WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Calori.WebApi.Controllers
@@ -116,6 +117,14 @@ namespace Calori.WebApi.Controllers
             var response = await Mediator.Send(command);
 
             return Ok(response.Message);
+        }
+        
+        [HttpPost]
+        [Route("check")]
+        [Authorize]
+        public IActionResult CheckAuth()
+        {
+            return Ok();
         }
     }
 }

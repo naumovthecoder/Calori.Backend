@@ -128,11 +128,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/evgeny/Desktop/Calori.Backend/Calori.EmailRabbitMQReceiver/Calori.EmailRabbitMQReceiver.csproj",
+      "projectUniqueName": "/Users/evgeny/Desktop/Calori.Backend/EmailReceiver/EmailMQReceiver/Calori.EmailRabbitMQReceiver.csproj",
       "projectName": "Calori.EmailRabbitMQReceiver",
-      "projectPath": "/Users/evgeny/Desktop/Calori.Backend/Calori.EmailRabbitMQReceiver/Calori.EmailRabbitMQReceiver.csproj",
+      "projectPath": "/Users/evgeny/Desktop/Calori.Backend/EmailReceiver/EmailMQReceiver/Calori.EmailRabbitMQReceiver.csproj",
       "packagesPath": "/Users/evgeny/.nuget/packages/",
-      "outputPath": "/Users/evgeny/Desktop/Calori.Backend/Calori.EmailRabbitMQReceiver/obj/",
+      "outputPath": "/Users/evgeny/Desktop/Calori.Backend/EmailReceiver/EmailMQReceiver/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/evgeny/.nuget/NuGet/NuGet.Config"

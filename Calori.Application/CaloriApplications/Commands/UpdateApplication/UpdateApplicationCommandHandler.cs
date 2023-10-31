@@ -43,48 +43,6 @@ namespace Calori.Application.CaloriApplications.Commands.UpdateApplication
         public async Task<UpdateApplicationResult> Handle(UpdateApplicationCommand request,
             CancellationToken cancellationToken)
         {
-
-            if (!string.IsNullOrEmpty(request.Email) && request.Email != request.IdentityUserEmail)
-            {
-                var user = await _userManager.FindByEmailAsync(request.IdentityUserEmail);
-
-                if (user != null)
-                {
-                    var password = new PasswordGenerator().GeneratePassword();
-                    
-                    try
-                    {
-                        var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                        await _userManager.ResetPasswordAsync(user, resetToken, password);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new AuthenticationException(e.Message);
-                    }
-                    
-                    user.Email = request.Email;
-                    await _userManager.UpdateAsync(user);
-                    
-                    string subject = "Test Email from Calori.App";
-                    string body = $"Welcome to Calori.App!\nYour Login - {user.Email}\nPassword - {password}";
-
-                    Console.WriteLine(body);
-                    
-                    try
-                    {
-                        await _emailService.SendEmailAsync(user.Email, subject, body);
-                    }
-                    catch (Exception e)
-                    {
-                        // return StatusCode(StatusCodes.Status500InternalServerError, new Response
-                        // {
-                        //     Status = "Error", 
-                        //     Messages = new []{$"Error when sending an e-mail. Message - {e.Message}"}
-                        // });
-                    }
-                }
-            }
-            
             var gender = request.Gender;
             var weight = request.Weight;
             var height = request.Height;
@@ -110,6 +68,64 @@ namespace Calori.Application.CaloriApplications.Commands.UpdateApplication
             var calculator = new ApplicationCalculator();
             var calculated = calculator.CalculateApplicationParameters(calculatorRequest);
 
+            var offset = 0.0m;
+
+            switch (activity)
+            {
+                case CaloriActivityLevel.Inactive:
+                    offset = 1.2m;
+                    break;
+                case CaloriActivityLevel.Light:
+                    offset = 1.375m;
+                    break;
+                case CaloriActivityLevel.Moderate:
+                    offset = 1.55m;
+                    break;
+            }
+            
+            var dailyCalories = (int)(calculated.BMR * offset ?? 0);
+            
+            if (dailyCalories - 750 > 2500 || dailyCalories <= 1250)
+            {
+                var updateErrorResult = new UpdateApplicationResult();
+                updateErrorResult.Message = "There is no suitable diet.";
+                return updateErrorResult;
+            }
+            
+            if (!string.IsNullOrEmpty(request.Email) && request.Email != request.IdentityUserEmail)
+            {
+                var user = await _userManager.FindByEmailAsync(request.IdentityUserEmail);
+
+                if (user != null)
+                {
+                    var password = new PasswordGenerator().GeneratePassword();
+                    
+                    try
+                    {
+                        var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                        await _userManager.ResetPasswordAsync(user, resetToken, password);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new AuthenticationException(e.Message);
+                    }
+                    
+                    user.Email = request.Email;
+                    await _userManager.UpdateAsync(user);
+                    
+                    string subject = "Test Email from Calori.App";
+                    string body = $"Welcome to Calori.App!\nYour Login - {user.Email}\nPassword - {password}";
+                    
+                    try
+                    {
+                        await _emailService.SendEmailAsync(user.Email, subject, body);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+            }
+            
             // var entity = await _dbContext.CaloriApplications
             //     .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
             
@@ -128,23 +144,8 @@ namespace Calori.Application.CaloriApplications.Commands.UpdateApplication
             
             await _dbContext.SaveChangesAsync(cancellationToken);
             
-            var offset = 0.0m;
-
-            switch (activity)
-            {
-                case CaloriActivityLevel.Inactive:
-                    offset = 1.2m;
-                    break;
-                case CaloriActivityLevel.Light:
-                    offset = 1.375m;
-                    break;
-                case CaloriActivityLevel.Moderate:
-                    offset = 1.55m;
-                    break;
-            }
+////////
             
-            var dailyCalories = (int)(calculated.BMR * offset ?? 0);
-        
             var closestRation = CalculateTargetRation(dailyCalories);
 
             entity.GenderId = gender;
@@ -167,27 +168,24 @@ namespace Calori.Application.CaloriApplications.Commands.UpdateApplication
             var caloriSlimmingPlan = await _dbContext.CaloriSlimmingPlan
                 .Where(p => p.Calories == closestRation)
                 .FirstOrDefaultAsync(cancellationToken);
-
-            Console.WriteLine(entity.PersonalSlimmingPlanId);
             
             if (entity.PersonalSlimmingPlanId != null)
             {
                 
-                var planCreateCommand = new UpdatePersonalSlimmingPlanCommand
-                {
-                    Id = (int)entity.PersonalSlimmingPlanId,
-                    WeekNumber = 1,
-                    Weight = weight,
-                    CaloricNeeds = dailyCalories,
-                    Goal = goal,
-                    CurrentWeekDeficit = deficitOnWeek,
-                    BurnedThisWeek = burnedOnWeek,
-                    TotalBurned = 0,
-                    CaloriSlimmingPlanId = caloriSlimmingPlan.Id,
-                    Gender = gender,
-                    CurrentCalori = closestRation,
-                    CaloriActivityLevel = activity
-                };
+                var planCreateCommand = new UpdatePersonalSlimmingPlanCommand();
+
+                planCreateCommand.Id = (int)entity.PersonalSlimmingPlanId;
+                planCreateCommand.WeekNumber = 1;
+                planCreateCommand.Weight = weight;
+                planCreateCommand.CaloricNeeds = dailyCalories;
+                planCreateCommand.Goal = goal;
+                planCreateCommand.CurrentWeekDeficit = deficitOnWeek;
+                planCreateCommand.BurnedThisWeek = burnedOnWeek;
+                planCreateCommand.TotalBurned = 0;
+                planCreateCommand.CaloriSlimmingPlanId = caloriSlimmingPlan.Id;
+                planCreateCommand.Gender = gender;
+                planCreateCommand.CurrentCalori = closestRation;
+                planCreateCommand.CaloriActivityLevel = activity;
             
                 var command = _mapper.Map<UpdatePersonalSlimmingPlanCommand>(planCreateCommand);
                 await _mediator.Send(command);

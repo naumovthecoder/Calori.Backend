@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,19 +36,6 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
         {
             var createApplicationResponse = new CreateApplicationResult();
             
-            var registerModel = new RegisterModel
-            {
-                Email = request.Email,
-                UserName = request.Email
-            };
-            
-            var registerResponse = await RegisterUser(registerModel);
-
-            if (registerResponse == null)
-            {
-                throw new Exception("Error when register user");
-            }
-            
             var gender = request.Gender;
             var weight = request.Weight;
             var height = request.Height;
@@ -56,7 +44,12 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             var email = request.Email;
             var activity = request.Activity;
             var allergies = request.Allergies;
-            var anotherAllergy = request.AnotherAllergy;
+            string anotherAllergy = "";
+
+            if (!string.IsNullOrEmpty(request.AnotherAllergy))
+            {
+                anotherAllergy = request.AnotherAllergy;
+            }
 
             var calculator = new ApplicationCalculator();
             var calculated = calculator.CalculateApplicationParameters(request);
@@ -69,9 +62,6 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
                 BMI = calculated.BMI,
                 BMR = calculated.BMR
             };
-            
-            _dbContext.ApplicationBodyParameters.Add(appBodyParameters);
-            await _dbContext.SaveChangesAsync(cancellationToken);
             
             var offset = 0.0m;
 
@@ -89,49 +79,69 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             }
             
             var dailyCalories = (int)(appBodyParameters.BMR * offset ?? 0);
+
+            if (dailyCalories - 750 > 2500 || dailyCalories <= 1250)
+            {
+                createApplicationResponse.Message = "There is no suitable diet.";
+                return createApplicationResponse;
+            }
+            
+            _dbContext.ApplicationBodyParameters.Add(appBodyParameters);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         
             var closestRation = CalculateTargetRation(dailyCalories);
 
-            var application = new CaloriApplication
-            {
-                GenderId = gender,
-                Weight = weight,
-                Height = height,
-                Age = age,
-                Goal = goal,
-                Email = email,
-                ActivityLevelId = activity,
-                CreatedAt = DateTime.UtcNow,
-                AnotherAllergy = anotherAllergy,
-                ApplicationBodyParametersId = appBodyParameters.Id,
-                DailyCalories = dailyCalories,
-                Ration = closestRation
-            };
+            var application = new CaloriApplication();
+
+            application.GenderId = gender;
+            application.Weight = weight;
+            application.Height = height;
+            application.Age = age;
+            application.Goal = goal;
+            application.Email = email;
+            application.ActivityLevelId = activity;
+            application.CreatedAt = DateTime.UtcNow;
+            application.AnotherAllergy = anotherAllergy;
+            application.ApplicationBodyParametersId = appBodyParameters.Id;
+            application.DailyCalories = dailyCalories;
+            application.Ration = closestRation;
             
             var deficitOnWeek = dailyCalories - closestRation;
             var burnedOnWeek = (deficitOnWeek * 1000) / 8000;
-
+            
             var caloriSlimmingPlan = await _dbContext.CaloriSlimmingPlan
                 .Where(p => p.Calories == closestRation)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            var planCreateCommand = new CreatePersonalSlimmingPlanCommand
-            {
-                WeekNumber = 1,
-                Weight = weight,
-                CaloricNeeds = dailyCalories,
-                Goal = goal,
-                CurrentWeekDeficit = deficitOnWeek,
-                BurnedThisWeek = burnedOnWeek,
-                TotalBurned = 0,
-                CaloriSlimmingPlanId = caloriSlimmingPlan.Id,
-                Gender = gender,
-                CurrentCalori = closestRation,
-                CaloriActivityLevel = activity
-            };
+            var planCreateCommand = new CreatePersonalSlimmingPlanCommand();
+
+            planCreateCommand.WeekNumber = 1;
+            planCreateCommand.Weight = weight;
+            planCreateCommand.CaloricNeeds = dailyCalories;
+            planCreateCommand.Goal = goal;
+            planCreateCommand.CurrentWeekDeficit = deficitOnWeek;
+            planCreateCommand.BurnedThisWeek = burnedOnWeek;
+            planCreateCommand.TotalBurned = 0;
+            planCreateCommand.CaloriSlimmingPlanId = caloriSlimmingPlan.Id;
+            planCreateCommand.Gender = gender;
+            planCreateCommand.CurrentCalori = closestRation;
+            planCreateCommand.CaloriActivityLevel = activity;
             
             var command = _mapper.Map<CreatePersonalSlimmingPlanCommand>(planCreateCommand);
             var plan = await _mediator.Send(command);
+            
+            var registerModel = new RegisterModel
+            {
+                Email = request.Email,
+                UserName = request.Email
+            };
+            
+            var registerResponse = await RegisterUser(registerModel);
+
+            if (registerResponse == null)
+            {
+                throw new Exception("Error when register user");
+            }
 
             application.PersonalSlimmingPlanId = plan.Id;
             application.UserId = registerResponse.User.Id;
