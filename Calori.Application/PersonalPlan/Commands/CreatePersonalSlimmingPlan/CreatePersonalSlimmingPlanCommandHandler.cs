@@ -24,8 +24,16 @@ namespace Calori.Application.PersonalPlan.Commands.CreatePersonalSlimmingPlan
 
             var personalSlimmingPlan = new PersonalSlimmingPlan
             {
-                StartDate = new DateTime(2024, 1, 8),
-                FinishDate = new DateTime(2024, 1, 8).AddDays(weeksToTarget * 7),
+                // TODO: ONLY TEST
+                // StartDate = new DateTime(2024, 1, 8),
+                StartDate = new DateTime(2023, 10, 1),
+                // TODO: ONLY TEST
+                
+                // TODO: ONLY TEST
+                //FinishDate = new DateTime(2024, 1, 8).AddDays(weeksToTarget * 7),
+                FinishDate = new DateTime(2023, 10, 1).AddDays(weeksToTarget * 7),
+                // TODO: ONLY TEST
+                
                 WeekNumber = 0,
                 CurrentWeight = request.Weight,
                 CaloricNeeds = request.CaloricNeeds,
