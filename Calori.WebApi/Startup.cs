@@ -1,9 +1,11 @@
+using System;
 using System.Reflection;
 using System.Text;
 using Calori.Application;
 using Calori.Application.Common.Mappings;
 using Calori.Application.Interfaces;
 using Calori.Domain.Models.Auth;
+using Calori.WebApi.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Stripe;
 
 namespace Calori.WebApi
 {
@@ -32,6 +35,23 @@ namespace Calori.WebApi
             {
                 config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
                 config.AddProfile(new AssemblyMappingProfile(typeof(ICaloriDbContext).Assembly));
+            });
+            
+            StripeConfiguration.AppInfo = new AppInfo
+            {
+                Name = "stripe-samples/checkout-single-subscription",
+                Url = "https://github.com/stripe-samples/checkout-single-subscription",
+                Version = "0.0.1",
+            };
+
+            services.Configure<StripeOptions>(options =>
+            {
+                options.PublishableKey = "pk_live_51O4pkFHNRk8vDVhuGPRbIcXmlj2T9JYVDqe2cP1nGHzpUdFACtoS3A6Oap2ne64HseJKZeN7dk9XuMNs4P3yiNdt00Us62n6uX";
+                options.SecretKey = "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";
+                options.WebhookSecret = "whsec_123...";
+                options.BasicPrice = "price_1O7OEHHNRk8vDVhugHahvbuH";
+                options.ProPrice = "price_1O7OCfHNRk8vDVhuco4vIaJ0";
+                options.Domain = "http://localhost:4242";
             });
 
             services.AddApplication();
@@ -137,6 +157,12 @@ namespace Calori.WebApi
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Calori.WebApi v1"));
             // ONLY DEV
+            
+            
+            // TODO: TEST
+            app.UseFileServer();
+            // TODO: TEST
+            
             
             app.UseRouting();
             // поменял местами эти 
