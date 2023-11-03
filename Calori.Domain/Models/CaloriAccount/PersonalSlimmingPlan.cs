@@ -20,5 +20,8 @@ namespace Calori.Domain.Models.CaloriAccount
         public int? WeeksToTarget { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        
+        public int? SubscriptionDetailsId { get; set; }
+        public SubscriptionDetails? SubscriptionDetails { get; set; }
     }
 }

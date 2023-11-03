@@ -35,12 +35,12 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
             CancellationToken cancellationToken)
         {
             // TODO: DateTime.Today сменить на request.CurrentDate
-            var currentDate = DateTime.Today;
+            var currentDate = request.CurrentDate;
             // TODO: DateTime.Today сменить на request.CurrentDate
             
             var application = await _dbContext.CaloriApplications
-                .FirstOrDefaultAsync(x => x.Email == request.UserEmail, cancellationToken);
-            
+                .FirstOrDefaultAsync(x => x.UserId == request.UserId, cancellationToken);
+
             var personalPlan = await _dbContext.PersonalSlimmingPlan
                 .FirstOrDefaultAsync(x => 
                     x.Id == application.PersonalSlimmingPlanId, cancellationToken);
@@ -88,6 +88,9 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
 
             var entity = new AutoCalculatedPlanVm();
 
+            var userPayment = await _dbContext.UserPayments
+                .FirstOrDefaultAsync(p => p.UserId == request.UserId);
+
             entity.PersonalPlanId = (int)personalPlanId!;
             entity.WeightLost = (double)weightLost!;
             entity.HoursSaved = hoursSaved!;
@@ -97,6 +100,7 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
             entity.FinishDate = (DateTime)finishDate!;
             entity.CurrentCaloriPlan = currentCaloriPlan;
             entity.Message = string.Empty;
+            entity.IsPaid = userPayment.IsPaid;
 
             return _mapper.Map<AutoCalculatedPlanVm>(entity);
         }
@@ -131,11 +135,6 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
                 weight -= burnedOnWeek / 1000;
                 lossWeigth += burnedOnWeek / 1000;
                 virtualWeek++;
-
-                Console.WriteLine(
-                    $"caloriNeeds: {caloriNeeds} | eats: {eats} | " +
-                    $"deficitOnWeek: {deficitOnWeek} | burnedOnWeek: {burnedOnWeek} |" +
-                    $"weight: {weight} | lossWeigth: {lossWeigth} | virtualWeek: {virtualWeek}");
             }
 
             var result = new CalculateSlimmingResult

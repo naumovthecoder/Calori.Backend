@@ -4,25 +4,19 @@ namespace Calori.Domain.Models.Enums
 {
     public enum Allergies
     {
-        [Display(Name = "None")]
-        None = 0,
-    
-        [Display(Name = "Other")]
-        Other = 1,
-    
         [Display(Name = "Lactose")]
-        Lactose = 2,
+        Lactose = 1,
 
         [Display(Name = "Gluten")]
-        Gluten = 3,
+        Gluten = 2,
     
         [Display(Name = "Nuts")]
-        Nuts = 4,
+        Nuts = 3,
 
         [Display(Name = "Fish")]
-        Fish = 5,
+        Fish = 4,
     
         [Display(Name = "Citrus")]
-        Citrus = 6
+        Citrus = 5
     }
 }

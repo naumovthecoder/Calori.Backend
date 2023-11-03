@@ -19,6 +19,7 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
         public DateTime FinishDate { get; set; }
         
         public CaloriSlimmingPlan CurrentCaloriPlan { get; set; }
+        public bool IsPaid { get; set; } = false;
         
         public string Message { get; set; }
         

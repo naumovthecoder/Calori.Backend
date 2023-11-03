@@ -1,10 +1,14 @@
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using AutoMapper;
 using Calori.Application.Auth.Commands.Login;
 using Calori.Application.Auth.Commands.ResetPassword;
+using Calori.Domain.Models.Auth;
 using Calori.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Calori.WebApi.Controllers
@@ -14,81 +18,14 @@ namespace Calori.WebApi.Controllers
     public class AuthenticateController : BaseController
     {
         private readonly IMapper _mapper;
-
-        public AuthenticateController(IMapper mapper) => _mapper = mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
         
-        // private readonly UserManager<ApplicationUser> _userManager;
-        // private readonly RoleManager<IdentityRole> _roleManager;
-        // private readonly IConfiguration _configuration;
-        //
-        // public AuthenticateController(UserManager<ApplicationUser> userManager, 
-        //     RoleManager<IdentityRole> roleManager, IConfiguration configuration)
-        // {
-        //     _userManager = userManager;
-        //     _roleManager = roleManager;
-        //     _configuration = configuration;
-        // }
-        
-        // [HttpPost]
-        // [Route("register")]
-        // public async Task<IActionResult> Register([FromBody] RegisterModel model)
-        // {
-        //     var userExists = await _userManager.FindByEmailAsync(model.Email);
-        //     if (userExists != null)
-        //         return StatusCode(StatusCodes.Status500InternalServerError, 
-        //             new Response { Status = "Error", Messages = new []
-        //             {
-        //                 "User already exists!"
-        //             } });
-        //     
-        //
-        //     ApplicationUser user = new ApplicationUser()
-        //     {
-        //         UserName = model.UserName,
-        //         Email = model.Email,
-        //         SecurityStamp = Guid.NewGuid().ToString(),
-        //     };
-        //     // var password = new PasswordGenerator().GeneratePassword();
-        //     var result = await _userManager.CreateAsync(user, model.Password);
-        //     var errorMessages = result.Errors.Select(error => error.Description).ToList();
-        //     errorMessages.Add("User creation failed! Please check user details and try again.");
-        //     
-        //     if (!result.Succeeded)
-        //         return StatusCode(StatusCodes.Status500InternalServerError, new Response
-        //         {
-        //             Status = "Error", 
-        //             Messages = errorMessages.ToArray()
-        //         });
-        //
-        //     // var emailService = new EmailService.EmailService(
-        //     //     smtpServer: _configuration["EmailSettings:SmtpServer"], 
-        //     //     smtpPort: int.Parse(_configuration["EmailSettings:SmtpPort"]),
-        //     //     smtpUsername: _configuration["EmailSettings:SmtpUsername"],
-        //     //     smtpPassword: _configuration["EmailSettings:SmtpPassword"]
-        //     //     );
-        //     //
-        //     // string toEmail = "naumovthecoder@icloud.com";
-        //     // string subject = "Test Email from Calori.App";
-        //     // string body = $"Welcome to Calori.App!\nYour Login - {model.Email}\nPassword - {password}";
-        //     //
-        //     // try
-        //     // {
-        //     //     await emailService.SendEmailAsync(toEmail, subject, body);
-        //     // }
-        //     // catch (Exception e)
-        //     // {
-        //     //     return StatusCode(StatusCodes.Status500InternalServerError, new Response
-        //     //     {
-        //     //         Status = "Error", 
-        //     //         Messages = new []{$"Error when sending an e-mail. Message - {e.Message}"}
-        //     //     });
-        //     // }
-        //
-        //     return Ok(new Response { Status = "Success", Messages = new []
-        //     {
-        //         "User created successfully!"
-        //     } });
-        // }
+        public AuthenticateController(UserManager<ApplicationUser> userManager, 
+            IMapper mapper)
+        {
+            _userManager = userManager;
+            _mapper = mapper;
+        }
 
         [HttpPost]
         [Route("login")]
@@ -107,6 +44,29 @@ namespace Calori.WebApi.Controllers
             }
 
             return Unauthorized();
+        }
+        
+        [HttpPost]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Route("password/change")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        {
+            if (User == null)
+            {
+                return Unauthorized();
+            }
+            
+            var user = await _userManager.FindByEmailAsync(User!.Identity!.Name);
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok();
         }
         
         [HttpPost]

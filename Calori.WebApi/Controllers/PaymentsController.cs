@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using AutoMapper;
+using Calori.Application.Auth.Commands.Register;
+using Calori.Application.Payment;
 using Calori.Domain.Models.Auth;
 using Calori.WebApi.Configuration;
 using Calori.WebApi.Models.Stripe;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -16,15 +21,20 @@ namespace Calori.WebApi.Controllers
 {
     public class PaymentsController : Controller
     {
-        public readonly IOptions<StripeOptions> options;
+        private readonly IOptions<StripeOptions> options;
         private readonly IStripeClient client;
         private readonly UserManager<ApplicationUser> _userManager;
+        private IMediator _mediator;
+        private readonly IMapper _mapper;
+        
 
         public PaymentsController(IOptions<StripeOptions> options,
-        UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, IMapper mapper, IMediator mediator)
         {
             this.options = options;
             _userManager = userManager;
+            _mediator = mediator;
+            _mapper = mapper;
             this.client = new StripeClient(this.options.Value.SecretKey);
         }
 
@@ -42,68 +52,111 @@ namespace Calori.WebApi.Controllers
         private class CreateCheckoutSessionResponse
         {
             public string SessionUrl { get; set; }
-            public ApplicationUser User { get; set; }
+            public string SessionId { get; set; } 
         }
 
         [Authorize]
         [HttpPost("create-checkout-session")]
         public async Task<IActionResult> CreateCheckoutSession()
         {
-            var b = Request.Form["priceId"];
-            
-            var options = new SessionCreateOptions
+            var referringUrl = Request.Headers["Host"].ToString();
+
+            ApplicationUser appUser;
+            Console.WriteLine(User);
+            if (User != null)
             {
-                SuccessUrl = $"{this.options.Value.Domain}/success.html?session_id={{CHECKOUT_SESSION_ID}}",
-                CancelUrl = $"{this.options.Value.Domain}/canceled.html",
-                Mode = "subscription",
-                LineItems = new List<SessionLineItemOptions>
+                appUser = await _userManager.FindByEmailAsync(User!.Identity!.Name);
+                if (appUser != null)
                 {
-                    new SessionLineItemOptions
+                    Console.WriteLine(appUser.Email);
+
+                    #region SessionCreating
+
+                    var options = new SessionCreateOptions
                     {
-                        Price = Request.Form["priceId"],
-                        Quantity = 1,
-                    },
-                },
-                // AutomaticTax = new SessionAutomaticTaxOptions { Enabled = true },
-            };
-            var service = new SessionService(this.client);
-            try
-            {
-                var session = await service.CreateAsync(options);
-                Response.Headers.Add("Location", session.Url);
-                
-                var result = new CreateCheckoutSessionResponse
-                {
-                    SessionUrl = session.Url
-                };
-
-                var user =  await _userManager.FindByEmailAsync(User!.Identity!.Name);
-
-                if (user != null)
-                {
-                    result.User = user;
-                }
-
-                return Ok(result);
-            }
-            catch (StripeException e)
-            {
-                Console.WriteLine(e.StripeError.Message);
-                return BadRequest(new ErrorResponse
-                {
-                    ErrorMessage = new ErrorMessage
+                        // SuccessUrl = $"{this.options.Value.Domain}/success.html?session_id={{CHECKOUT_SESSION_ID}}",
+                        // CancelUrl = $"{this.options.Value.Domain}/canceled.html",
+                        SuccessUrl = "http://localhost:5173/profile?payment_result=success",
+                        CancelUrl = "http://localhost:5173/profile?payment_result=fail",
+                        PhoneNumberCollection = new SessionPhoneNumberCollectionOptions { Enabled = true },
+                        CustomerEmail = appUser.Email,
+                        ShippingAddressCollection = new SessionShippingAddressCollectionOptions
+                        {
+                            AllowedCountries = new List<string> { "FI" }
+                        },
+                        Mode = "subscription",
+                        LineItems = new List<SessionLineItemOptions>
+                        {
+                            new SessionLineItemOptions
+                            {
+                                Price = Request.Form["priceId"],
+                                Quantity = 1,
+                            },
+                        },
+                        // AutomaticTax = new SessionAutomaticTaxOptions { Enabled = true },
+                    };
+                    var service = new SessionService(this.client);
+                    try
                     {
-                        Message = e.StripeError.Message,
+                        var session = await service.CreateAsync(options); // async
+                        Response.Headers.Add("Location", session.Url);
+                        // return new StatusCodeResult(303);
+                        var result = new CreateCheckoutSessionResponse
+                        {
+                            SessionUrl = session.Url
+                        };
+                        
+                        ApplicationUser applicationUser;
+                        if (User != null)
+                        {
+                            applicationUser = await _userManager.FindByEmailAsync(User!.Identity!.Name);
+                            
+                            if (applicationUser != null)
+                            {
+                                result.SessionId = session.Id;
+                                var payCommand = new PaymentCommand
+                                {
+                                    SessionId = session.Id,
+                                    UserId = applicationUser.Id
+                                };
+                                
+                                var command = _mapper.Map<PaymentCommand>(payCommand);
+                                var response = await _mediator.Send(command);
+
+                                if (response == null || !string.IsNullOrEmpty(response.Message))
+                                {
+                                    return BadRequest();
+                                }
+                            }
+                        }
+                         
+                        return Ok(result);
                     }
-                });
+                    catch (StripeException e)
+                    {
+                        Console.WriteLine(e.StripeError.Message);
+                        return BadRequest(new ErrorResponse
+                        {
+                            ErrorMessage = new ErrorMessage
+                            {
+                                Message = e.StripeError.Message,
+                            }
+                        });
+                    }
+
+                    #endregion
+                }
             }
+            return Unauthorized("TEstTEstTEstTEstTEstTEstTEst");
         }
 
         [HttpGet("checkout-session")]
         public async Task<IActionResult> CheckoutSession(string sessionId)
         {
             var service = new SessionService(this.client);
+            Console.WriteLine(client);
             var session = await service.GetAsync(sessionId);
+            Console.WriteLine(sessionId);
             return Ok(session);
         }
 
@@ -131,34 +184,41 @@ namespace Calori.WebApi.Controllers
             return new StatusCodeResult(303);
         }
 
-        [HttpPost("webhook")]
-        public async Task<IActionResult> Webhook()
-        {
-            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-            Event stripeEvent;
-            try
-            {
-                stripeEvent = EventUtility.ConstructEvent(
-                    json,
-                    Request.Headers["Stripe-Signature"],
-                    this.options.Value.WebhookSecret
-                );
-                Console.WriteLine($"Webhook notification with type: {stripeEvent.Type} found for {stripeEvent.Id}");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Something failed {e}");
-                return BadRequest();
-            }
-
-            if (stripeEvent.Type == "checkout.session.completed")
-            {
-                var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
-                Console.WriteLine($"Session ID: {session.Id}");
-                // Take some action based on session.
-            }
-
-            return Ok();
-        }
+        // [HttpPost("webhook")]
+        // public async Task<IActionResult> Webhook()
+        // {
+        //     
+        //     var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+        //     Event stripeEvent;
+        //     try
+        //     {
+        //         stripeEvent = EventUtility.ConstructEvent(
+        //             json,
+        //             Request.Headers["Stripe-Signature"],
+        //             this.options.Value.WebhookSecret
+        //         );
+        //         var user = await _userManager.FindByEmailAsync(User!.Identity!.Name);
+        //
+        //         if (user != null)
+        //         {
+        //             Console.WriteLine(user);
+        //         }
+        //         
+        //         Console.WriteLine($"Webhook notification with type: {stripeEvent.Type} found for {stripeEvent.Id}");
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         Console.WriteLine($"Something failed {e}");
+        //         return BadRequest();
+        //     }
+        //
+        //     if (stripeEvent.Type == "checkout.session.completed")
+        //     {
+        //         var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
+        //         Console.WriteLine($"Session ID: {session.Id}");
+        //     }
+        //
+        //     return Ok();
+        // }
     }
 }

@@ -13,6 +13,15 @@ namespace Calori.WebApi
         public DbSet<ApplicationAllergy> ApplicationAllergies { get; set; }
         public DbSet<PersonalSlimmingPlan> PersonalSlimmingPlan { get; set; }
         public DbSet<CaloriSlimmingPlan> CaloriSlimmingPlan { get; set; }
+        
+        public DbSet<PaymentPeriod> PaymentPeriods { get; set; }
+        
+        public DbSet<SubscriptionDetails> SubscriptionDetails { get; set; }
+        public DbSet<UserPayment> UserPayments { get; set; }
+        public DbSet<CaloriShippingData> CaloriShippingData { get; set; }
+        
+        public DbSet<CaloriFeedback> CaloriFeedback { get; set; }
+            
         public CaloriDbContext(DbContextOptions<CaloriDbContext> options) : base(options) { }
         
         protected override void OnModelCreating(ModelBuilder builder)
@@ -22,6 +31,11 @@ namespace Calori.WebApi
             builder.ApplyConfiguration(new ApplicationAllergyConfiguration());
             builder.ApplyConfiguration(new CaloriSlimmingPlanConfiguration());
             builder.ApplyConfiguration(new PersonalSlimmingPlanConfiguration());
+            builder.ApplyConfiguration(new PaymentPeriodConfiguration());
+            builder.ApplyConfiguration(new SubscriptionDetailsConfiguration());
+            builder.ApplyConfiguration(new UserPaymentConfiguration());
+            builder.ApplyConfiguration(new CaloriShippingDataConfiguration());
+            builder.ApplyConfiguration(new CaloriFeedbackConfiguration());
             
             builder.Entity<CaloriSlimmingPlan>().HasData(
                 new CaloriSlimmingPlan { Id = 1, Calories = 1250 },

@@ -23,12 +23,15 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
         private readonly ICaloriDbContext _dbContext;
         private readonly IMapper _mapper;
         protected IMediator _mediator;
+        private readonly IEmailService _emailService;
 
-        public CreateCaloriApplicationCommandHandler(ICaloriDbContext dbContext, IMapper mapper, IMediator mediator)
+        public CreateCaloriApplicationCommandHandler(ICaloriDbContext dbContext, 
+            IMapper mapper, IMediator mediator, IEmailService emailService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _mediator = mediator;
+            _emailService = emailService;
         }
 
         public async Task<CreateApplicationResult> Handle(CreateCaloriApplicationCommand request,
@@ -135,16 +138,34 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
                 Email = request.Email,
                 UserName = request.Email
             };
-            
-            var registerResponse = await RegisterUser(registerModel);
 
-            if (registerResponse == null)
+            bool hasLactoseOrNone = allergies == null || allergies.Count == 0 || allergies.Contains(1);
+            bool hasNoOtherAllergies = string.IsNullOrEmpty(anotherAllergy);
+
+            RegisterResponse registerResponse;
+
+            if (hasLactoseOrNone && hasNoOtherAllergies)
             {
-                throw new Exception("Error when register user");
+                registerResponse = await RegisterUser(registerModel);
+                if (registerResponse == null)
+                {
+                    throw new Exception("Error when register user");
+                }
+                
+                application.PersonalSlimmingPlanId = plan.Id;
+                application.UserId = registerResponse.User.Id;
+                createApplicationResponse.Token = registerResponse.Token;
             }
+            else
+            {
+                createApplicationResponse.Message = 
+                    "Due to your food allergies, we are unable to offer a diet that suits your needs.";
 
-            application.PersonalSlimmingPlanId = plan.Id;
-            application.UserId = registerResponse.User.Id;
+                await _emailService.SendEmailAsync(request.Email, 
+                    "There are no suitable diets.", 
+                    "It is recommended that a patient with allergies to certain foods develop an individualized diet, " +
+                    "eliminating allergens, and consult with a physician or dietitian to ensure a balanced diet.");
+            }
             
             _dbContext.CaloriApplications.Add(application);
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -164,9 +185,11 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
-            
-            createApplicationResponse.Application = application;
-            createApplicationResponse.Token = registerResponse.Token;
+
+            if (hasLactoseOrNone && hasNoOtherAllergies)
+            {
+                createApplicationResponse.Application = application;
+            }
             
             return createApplicationResponse;
         }

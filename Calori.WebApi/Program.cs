@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Stripe;
 
 namespace Calori.WebApi
 {
@@ -19,10 +20,10 @@ namespace Calori.WebApi
                 var serviceProvider = scope.ServiceProvider;
                 try
                 {
-                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    db.Database.Migrate();
-                    var context = serviceProvider.GetRequiredService<CaloriDbContext>();
-                    context.Database.Migrate();
+                    // var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    // db.Database.Migrate();
+                    // var context = serviceProvider.GetRequiredService<CaloriDbContext>();
+                    // context.Database.Migrate();
                     //DbInitializer.Initialize(context);
                 }
                 catch (Exception exception)
@@ -37,12 +38,16 @@ namespace Calori.WebApi
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             DotNetEnv.Env.Load();
+            
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseWebRoot("./client");
+                    //webBuilder.UseWebRoot(".");
+                    //webBuilder.UseUrls("http://0.0.0.0:4242");
                     //webBuilder.UseUrls("http://*:80");
+                    //webBuilder.UseUrls("http://*:443");
                 });
         }
     }

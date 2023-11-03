@@ -13,6 +13,11 @@ namespace Calori.Application.Interfaces
         DbSet<ApplicationAllergy> ApplicationAllergies { get; set; }
         DbSet<PersonalSlimmingPlan> PersonalSlimmingPlan { get; set; }
         DbSet<CaloriSlimmingPlan> CaloriSlimmingPlan { get; set; }
+        DbSet<SubscriptionDetails> SubscriptionDetails { get; set; }
+        DbSet<PaymentPeriod> PaymentPeriods { get; set; }
+        DbSet<UserPayment> UserPayments { get; set; }
+        DbSet<CaloriShippingData> CaloriShippingData { get; set; }
+        DbSet<CaloriFeedback> CaloriFeedback { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

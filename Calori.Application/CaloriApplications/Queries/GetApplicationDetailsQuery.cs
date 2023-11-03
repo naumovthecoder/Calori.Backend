@@ -4,6 +4,6 @@ namespace Calori.Application.CaloriApplications.Queries
 {
     public class GetApplicationDetailsQuery : IRequest<ApplicationDetailsVm>
     {
-        public string Email { get; set; }
+        public string UserId { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace Calori.Application.CaloriApplications.Queries
         {
             var application = await _dbContext.CaloriApplications
                 .FirstOrDefaultAsync(a =>
-                    a.Email.ToLower() == request.Email.ToLower(), cancellationToken);
+                    a.UserId.ToLower() == request.UserId.ToLower(), cancellationToken);
 
             var applicationAllergies = await _dbContext.ApplicationAllergies
                 .Where(a => a.ApplicationId == application.Id).ToListAsync();
@@ -48,7 +48,7 @@ namespace Calori.Application.CaloriApplications.Queries
 
             if (application == null)
             {
-                throw new NotFoundException(nameof(CaloriApplication), request.Email);
+                throw new NotFoundException(nameof(CaloriApplication), request.UserId);
             }
 
             return _mapper.Map<ApplicationDetailsVm>(application);

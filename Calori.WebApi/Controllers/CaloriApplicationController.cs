@@ -77,7 +77,6 @@ namespace Calori.WebApi.Controllers
         {
             string userEmail = User!.Identity!.Name;
             var command = _mapper.Map<UpdateApplicationCommand>(dto);
-            Console.WriteLine(userEmail);
             // command.ApplicationUser = User;
             command.IdentityUserEmail = userEmail;
             var result = await Mediator.Send(command);
@@ -90,11 +89,17 @@ namespace Calori.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ApplicationDetailsVm>> Get()
         {
-            string userEmail = User!.Identity!.Name;
+            
+            if (User == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userManager.FindByEmailAsync(User!.Identity!.Name);
             
             var query = new GetApplicationDetailsQuery
             {
-                Email = userEmail
+                UserId = user.Id
             };
             var vm = await Mediator.Send(query);
             return Ok(vm);
