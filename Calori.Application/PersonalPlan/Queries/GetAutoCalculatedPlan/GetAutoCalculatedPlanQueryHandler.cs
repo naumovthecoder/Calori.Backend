@@ -89,7 +89,7 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
             var entity = new AutoCalculatedPlanVm();
 
             var userPayment = await _dbContext.UserPayments
-                .FirstOrDefaultAsync(p => p.UserId == request.UserId);
+                .FirstOrDefaultAsync(p => p.UserId == request.UserId, cancellationToken);
 
             entity.PersonalPlanId = (int)personalPlanId!;
             entity.WeightLost = (double)weightLost!;
@@ -100,7 +100,15 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
             entity.FinishDate = (DateTime)finishDate!;
             entity.CurrentCaloriPlan = currentCaloriPlan;
             entity.Message = string.Empty;
-            entity.IsPaid = userPayment.IsPaid;
+
+            if (userPayment == null)
+            {
+                entity.IsPaid = false;
+            }
+            else
+            {
+                entity.IsPaid = userPayment.IsPaid;
+            }
 
             return _mapper.Map<AutoCalculatedPlanVm>(entity);
         }
@@ -181,11 +189,6 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
                 {
                     break;
                 }
-                
-                Console.WriteLine(
-                    $"caloriNeeds: {caloriNeeds} | eats: {eats} | " +
-                    $"deficitOnDay: {deficitOnDay} | burnedOnDay: {burnedOnDay} |" +
-                    $"weight: {weight} | lossWeigth: {lossWeigth} | days left: {days}");
             }
             
             return days;

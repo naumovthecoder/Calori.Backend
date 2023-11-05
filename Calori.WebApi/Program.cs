@@ -44,21 +44,8 @@ namespace Calori.WebApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseWebRoot("./client");
-                    //webBuilder.UseWebRoot(".");
-                    //webBuilder.UseUrls("http://0.0.0.0:4242");
-                    // webBuilder.UseUrls("http://*:5000");
-                    // webBuilder.UseUrls("https://*:5001");
-                    // webBuilder.UseKestrel((hostingContext, options) =>
-                    // {
-                    //     var certificatePath = "/etc/ssl/testcaloriapi.crt";
-                    //     var certificatePassword = "/etc/ssl/testcaloriapi.key";
-                    //
-                    //     options.Listen(IPAddress.Any, 443, listenOptions =>
-                    //     {
-                    //         listenOptions.UseHttps(certificatePath, certificatePassword);
-                    //     });
-                    // });
+                    webBuilder.UseUrls("http://*:5000");
+                    webBuilder.UseUrls("https://*:5001");
                 });
         }
     }

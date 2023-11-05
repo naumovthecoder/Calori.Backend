@@ -5,6 +5,7 @@ namespace Calori.Application.Payment.AfterPayment
 {
     public class AfterPaymentCommand : IRequest<AfterPaymentResponse>
     {
+        public string Status { get; set; }
         public string SessionId { get; set; }
         public string UserEmail { get; set; }
         public string Name { get; set; }

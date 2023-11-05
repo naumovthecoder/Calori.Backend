@@ -40,17 +40,19 @@ namespace Calori.Application.Payment
                     var userPayment = new UserPayment
                     {
                         UserId = request.UserId,
-                        SessionId = request.SessionId
+                        SessionId = request.SessionId,
+                        Status = PaymentStatus.Pending,
+                        CreatedAt = DateTime.UtcNow
                     };
 
-                    var payment = await _dbContext.UserPayments
-                        .FirstOrDefaultAsync(p => p.UserId.ToLower() == request.UserId.ToLower()
-                        && p.IsPaid == false, cancellationToken);
-                    
-                    if (payment != null)
-                    {
-                        _dbContext.UserPayments.Remove(payment);
-                    }
+                    // var payment = await _dbContext.UserPayments
+                    //     .FirstOrDefaultAsync(p => p.UserId.ToLower() == request.UserId.ToLower()
+                    //     && p.IsPaid == false, cancellationToken);
+                    //
+                    // if (payment != null)
+                    // {
+                    //     _dbContext.UserPayments.Remove(payment);
+                    // }
 
                     await _dbContext.UserPayments.AddAsync(userPayment, cancellationToken);
                     await _dbContext.SaveChangesAsync(cancellationToken);

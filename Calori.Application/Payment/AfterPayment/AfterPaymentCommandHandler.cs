@@ -40,8 +40,23 @@ namespace Calori.Application.Payment.AfterPayment
                         p.SessionId.ToLower() == request.SessionId.ToLower(), cancellationToken);
 
                 userPayment.IsPaid = true;
+                userPayment.Status = PaymentStatus.Successful;
+                userPayment.UpdatedAt = DateTime.UtcNow;
 
                 var user = await _userManager.FindByIdAsync(userPayment.UserId);
+
+                var shipData = await _dbContext.CaloriShippingData
+                    .FirstOrDefaultAsync(d => 
+                        d.UserId == user.Id, cancellationToken);
+
+                if (shipData != null)
+                {
+                    return new AfterPaymentResponse
+                    {
+                        ShippingData = shipData,
+                        Message = ""
+                    };
+                }
 
                 var shippingData = new CaloriShippingData();
                 shippingData.UserId = user.Id;

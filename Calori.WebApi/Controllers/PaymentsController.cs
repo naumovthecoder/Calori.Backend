@@ -62,14 +62,11 @@ namespace Calori.WebApi.Controllers
             var referringUrl = Request.Headers["Host"].ToString();
 
             ApplicationUser appUser;
-            Console.WriteLine(User);
             if (User != null)
             {
                 appUser = await _userManager.FindByEmailAsync(User!.Identity!.Name);
                 if (appUser != null)
                 {
-                    Console.WriteLine(appUser.Email);
-
                     #region SessionCreating
 
                     var options = new SessionCreateOptions
@@ -134,7 +131,6 @@ namespace Calori.WebApi.Controllers
                     }
                     catch (StripeException e)
                     {
-                        Console.WriteLine(e.StripeError.Message);
                         return BadRequest(new ErrorResponse
                         {
                             ErrorMessage = new ErrorMessage
@@ -147,16 +143,14 @@ namespace Calori.WebApi.Controllers
                     #endregion
                 }
             }
-            return Unauthorized("TEstTEstTEstTEstTEstTEstTEst");
+            return Unauthorized();
         }
 
         [HttpGet("checkout-session")]
         public async Task<IActionResult> CheckoutSession(string sessionId)
         {
             var service = new SessionService(this.client);
-            Console.WriteLine(client);
             var session = await service.GetAsync(sessionId);
-            Console.WriteLine(sessionId);
             return Ok(session);
         }
 
@@ -183,42 +177,5 @@ namespace Calori.WebApi.Controllers
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
         }
-
-        // [HttpPost("webhook")]
-        // public async Task<IActionResult> Webhook()
-        // {
-        //     
-        //     var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-        //     Event stripeEvent;
-        //     try
-        //     {
-        //         stripeEvent = EventUtility.ConstructEvent(
-        //             json,
-        //             Request.Headers["Stripe-Signature"],
-        //             this.options.Value.WebhookSecret
-        //         );
-        //         var user = await _userManager.FindByEmailAsync(User!.Identity!.Name);
-        //
-        //         if (user != null)
-        //         {
-        //             Console.WriteLine(user);
-        //         }
-        //         
-        //         Console.WriteLine($"Webhook notification with type: {stripeEvent.Type} found for {stripeEvent.Id}");
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         Console.WriteLine($"Something failed {e}");
-        //         return BadRequest();
-        //     }
-        //
-        //     if (stripeEvent.Type == "checkout.session.completed")
-        //     {
-        //         var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
-        //         Console.WriteLine($"Session ID: {session.Id}");
-        //     }
-        //
-        //     return Ok();
-        // }
     }
 }

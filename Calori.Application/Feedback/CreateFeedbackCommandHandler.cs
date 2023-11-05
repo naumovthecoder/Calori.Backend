@@ -37,8 +37,7 @@ namespace Calori.Application.Feedback
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                throw new Exception(e.Message);
             }
             
             return result;

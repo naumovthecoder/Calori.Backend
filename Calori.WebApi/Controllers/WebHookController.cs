@@ -97,6 +97,7 @@ namespace Calori.WebApi.Controllers
                         afterPaymentCommand.PostalCode = userAddress.PostalCode;
                         afterPaymentCommand.Country = userAddress.Country;
                         afterPaymentCommand.State = userAddress.State;
+                        afterPaymentCommand.Status = Events.CheckoutSessionCompleted;
                         
                         var command = _mapper.Map<AfterPaymentCommand>(afterPaymentCommand);
                         var result = await Mediator.Send(command);

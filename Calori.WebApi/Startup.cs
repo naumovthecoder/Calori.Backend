@@ -34,14 +34,6 @@ namespace Calori.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //var certificatePath = "/etc/ssl/testcaloriapi.crt";
-            //var certificatePassword = "/etc/ssl/testcaloriapi.key";
-            //var certificate = new X509Certificate2(certificatePath, certificatePassword);
-            
-            // services.Configure<ForwardedHeadersOptions>(options =>
-            // {
-            //     options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
-            // });
             services.AddAutoMapper(config =>
             {
                 config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));

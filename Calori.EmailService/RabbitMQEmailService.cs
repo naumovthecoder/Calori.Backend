@@ -30,7 +30,7 @@ namespace Calori.EmailService
 
                 var factory = new ConnectionFactory
                 {
-                    HostName = "rabbitmq",
+                    HostName = "127.0.0.1",
                     UserName = "guest",
                     Password = "guest",
                     Port = 5672
