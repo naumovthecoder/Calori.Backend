@@ -47,7 +47,7 @@ namespace Calori.WebApi
                     //webBuilder.UseWebRoot(".");
                     //webBuilder.UseUrls("http://0.0.0.0:4242");
                     webBuilder.UseUrls("http://*:80");
-                    webBuilder.UseUrls("http://*:443");
+                    webBuilder.UseUrls("https://*:443");
                 });
         }
     }
