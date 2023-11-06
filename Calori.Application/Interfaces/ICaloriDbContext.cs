@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Calori.Domain.Models;
 using Calori.Domain.Models.ApplicationModels;
 using Calori.Domain.Models.CaloriAccount;
 using Calori.Domain.Models.Payment;
@@ -20,6 +21,7 @@ namespace Calori.Application.Interfaces
         DbSet<CaloriShippingData> CaloriShippingData { get; set; }
         DbSet<CaloriFeedback> CaloriFeedback { get; set; }
         DbSet<CaloriPrice> CaloriPrices { get; set; }
+        DbSet<CaloriStripeCustomer> CaloriStripeCustomers { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

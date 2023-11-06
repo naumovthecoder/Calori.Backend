@@ -1,9 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
+using Calori.Application.Interfaces;
 using Calori.Application.Payment.AfterPayment;
+using Calori.Domain.Models.Auth;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Stripe.Checkout;
 
@@ -14,12 +20,16 @@ namespace Calori.WebApi.Controllers
     public class WebhookController : BaseController
     {
         private readonly IMapper _mapper;
+        private readonly ICaloriDbContext _dbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         const string endpointSecret = "whsec_0fba8cc180177c2f6eb0ddfccfe32430a0b5165f3da65362f4b7615e33b37a70";
 
-        public WebhookController(IMapper mapper)
+        public WebhookController(IMapper mapper, ICaloriDbContext context, UserManager<ApplicationUser> userManager)
         {
             _mapper = mapper;
+            _userManager = userManager;
+            _dbContext = context;
         }
         
         // [HttpPost]
@@ -98,11 +108,46 @@ namespace Calori.WebApi.Controllers
                         afterPaymentCommand.Country = userAddress.Country;
                         afterPaymentCommand.State = userAddress.State;
                         afterPaymentCommand.Status = Events.CheckoutSessionCompleted;
+                        afterPaymentCommand.AmountTotal = session.AmountTotal;
                         
                         var command = _mapper.Map<AfterPaymentCommand>(afterPaymentCommand);
                         var result = await Mediator.Send(command);
                     }
                 }
+
+                // if (stripeEvent.Type == Events.CustomerSubscriptionUpdated)
+                // {
+                //     Console.WriteLine(stripeEvent.Type);
+                //     var session = stripeEvent.Data.Object as Session;
+                //     if (session != null)
+                //     {
+                //         var stripeCustomerId = session.Customer.Id;
+                //
+                //         var user = await _dbContext.CaloriStripeCustomers
+                //             .FirstOrDefaultAsync(u =>
+                //                 u.StripeCustomerId.ToLower() == stripeCustomerId.ToLower());
+                //         
+                //         var application = await _dbContext.CaloriApplications
+                //             .FirstOrDefaultAsync(x => x.UserId.ToLower() == user.CaloriUserId.ToLower());
+                //
+                //         var entity = await _dbContext.PersonalSlimmingPlan
+                //             .FirstOrDefaultAsync(plan =>
+                //                 plan.Id == application.PersonalSlimmingPlanId);
+                //
+                //         var subsDetails = await _dbContext.SubscriptionDetails
+                //             .FirstOrDefaultAsync(d => d.Id == entity.SubscriptionDetailsId);
+                //
+                //         var subs = session.Subscription.Items.Data[0].Price.Id;
+                //
+                //         var price = await _dbContext.CaloriPrices.FirstOrDefaultAsync(p =>
+                //             p.PriceId.ToLower() == subs.ToLower());
+                //
+                //         subsDetails.CaloriPrice = price;
+                //         subsDetails.CaloriPriceId = price.PriceId;
+                //
+                //         await _dbContext.SaveChangesAsync(CancellationToken.None);
+                //     }
+                // }
                 // ... handle other event types
                 else
                 {

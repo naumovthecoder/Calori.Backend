@@ -16,5 +16,6 @@ namespace Calori.Application.Payment.AfterPayment
         public string PostalCode { get; set; }
         public string Country { get; set; }
         public string State { get; set; }
+        public long? AmountTotal { get; set; }
      }
 }

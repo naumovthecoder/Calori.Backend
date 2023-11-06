@@ -1,4 +1,5 @@
 using Calori.Application.Interfaces;
+using Calori.Domain.Models;
 using Calori.Domain.Models.ApplicationModels;
 using Calori.Domain.Models.CaloriAccount;
 using Calori.Domain.Models.Payment;
@@ -22,6 +23,7 @@ namespace Calori.WebApi
         public DbSet<CaloriShippingData> CaloriShippingData { get; set; }
         public DbSet<CaloriFeedback> CaloriFeedback { get; set; }
         public DbSet<CaloriPrice> CaloriPrices { get; set; }
+        public DbSet<CaloriStripeCustomer> CaloriStripeCustomers { get; set; }
             
         public CaloriDbContext(DbContextOptions<CaloriDbContext> options) : base(options) { }
         
@@ -38,6 +40,7 @@ namespace Calori.WebApi
             builder.ApplyConfiguration(new CaloriShippingDataConfiguration());
             builder.ApplyConfiguration(new CaloriFeedbackConfiguration());
             builder.ApplyConfiguration(new CaloriPriceConfiguration());
+            builder.ApplyConfiguration(new CaloriStripeCustomerConfiguration());
             
             builder.Entity<CaloriSlimmingPlan>().HasData(
                 new CaloriSlimmingPlan { Id = 1, Calories = 1250 },

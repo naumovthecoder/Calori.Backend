@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Calori.Application.Interfaces;
+using Calori.Domain.Models;
 using Calori.Domain.Models.Auth;
 using Calori.Domain.Models.CaloriAccount;
 using Calori.Domain.Models.Payment;
@@ -42,9 +43,15 @@ namespace Calori.Application.Payment.AfterPayment
                 userPayment.IsPaid = true;
                 userPayment.Status = PaymentStatus.Successful;
                 userPayment.UpdatedAt = DateTime.UtcNow;
+                if (request.AmountTotal != null) userPayment.Cost = (double)request.AmountTotal;
+
+                // var caloriStripeUser = new CaloriStripeCustomer();
+                // caloriStripeUser.CaloriUserId = userPayment.UserId;
+                //
+                // await _dbContext.CaloriStripeCustomers.AddAsync(caloriStripeUser);
 
                 var user = await _userManager.FindByIdAsync(userPayment.UserId);
-
+                
                 var shipData = await _dbContext.CaloriShippingData
                     .FirstOrDefaultAsync(d => 
                         d.UserId == user.Id, cancellationToken);

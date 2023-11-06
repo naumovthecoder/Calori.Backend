@@ -73,8 +73,8 @@ namespace Calori.WebApi.Controllers
                     {
                         // SuccessUrl = $"{this.options.Value.Domain}/success.html?session_id={{CHECKOUT_SESSION_ID}}",
                         // CancelUrl = $"{this.options.Value.Domain}/canceled.html",
-                        SuccessUrl = "http://localhost:5173/profile?payment_result=success",
-                        CancelUrl = "http://localhost:5173/profile?payment_result=fail",
+                        SuccessUrl = "https://calori-c69d2.web.app/profile?payment_result=success",
+                        CancelUrl = "https://calori-c69d2.web.app/profile?payment_result=fail",
                         PhoneNumberCollection = new SessionPhoneNumberCollectionOptions { Enabled = true },
                         CustomerEmail = appUser.Email,
                         ShippingAddressCollection = new SessionShippingAddressCollectionOptions
