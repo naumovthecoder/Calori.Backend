@@ -46,8 +46,9 @@ namespace Calori.WebApi
                     webBuilder.UseStartup<Startup>();
                     // webBuilder.UseUrls("http://*:5000");
                     // webBuilder.UseUrls("https://*:5001");
-                    webBuilder.UseUrls("http://localhost:5000");
-                    webBuilder.UseUrls("https://localhost:5001");
+                    webBuilder.UseUrls("https://*:5001");
+                    // webBuilder.UseUrls("http://localhost:5000");
+                    // webBuilder.UseUrls("https://localhost:5001");
                 });
         }
     }

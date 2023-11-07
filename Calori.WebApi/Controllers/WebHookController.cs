@@ -8,6 +8,7 @@ using AutoMapper;
 using Calori.Application.Interfaces;
 using Calori.Application.Payment.AfterPayment;
 using Calori.Domain.Models.Auth;
+using Calori.Domain.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
@@ -33,7 +34,7 @@ namespace Calori.WebApi.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             try
@@ -75,22 +76,71 @@ namespace Calori.WebApi.Controllers
                 if (stripeEvent.Type == Events.CustomerSubscriptionPaused)
                 {
                     var session = stripeEvent.Data.Object as Session;
+                    try
+                    {
+                        if (session != null)
+                        {
+                            var customerDetails = session.CustomerDetails;
+                            var subscriptionId = session.Subscription.Id;
+                            var service = new SubscriptionService();
+                            var response = await service.CancelAsync(subscriptionId);
+                        
+                            var user = await _userManager.FindByEmailAsync(customerDetails.Email);
+
+                            await UpdatePersonalPlanStatus(cancellationToken, user, SubscriptionStatus.Paused);
+                        }
+
+                        return Ok("Subscription canceled successfully.");
+                    }
+                    catch (StripeException ex)
+                    {
+                        // Handle the error, e.g., return an error message
+                        return BadRequest($"Subscription cancellation failed: {ex.Message}");
+                    }
                     if (session != null) Console.WriteLine(session.Subscription.Status);
                 }
                 
                 if (stripeEvent.Type == Events.CustomerSubscriptionDeleted)
                 {
                     var session = stripeEvent.Data.Object as Session;
-                    if (session != null) Console.WriteLine(session.Subscription.Status);
+                    var customerDetails = session.CustomerDetails;
+                    var subscriptionId = session.Subscription.Id;
+                    var service = new SubscriptionService();
+                    var response = await service.CancelAsync(subscriptionId);
+                        
+                    var user = await _userManager.FindByEmailAsync(customerDetails.Email);
+
+                    await UpdatePersonalPlanStatus(cancellationToken, user, SubscriptionStatus.Canceled);
                 }
-                
-                
 
                 return Ok();
             }
             catch (StripeException e)
             {
                 return BadRequest();
+            }
+        }
+        
+        private async Task UpdatePersonalPlanStatus(CancellationToken cancellationToken, 
+            ApplicationUser user, SubscriptionStatus status)
+        {
+            var application = await _dbContext.CaloriApplications
+                .FirstOrDefaultAsync(a =>
+                    a.UserId.ToLower() == user.Id.ToLower(), cancellationToken);
+
+            var personalPlan = await _dbContext.PersonalSlimmingPlan
+                .FirstOrDefaultAsync(p =>
+                    p.Id == application.PersonalSlimmingPlanId, cancellationToken);
+
+            if (status == SubscriptionStatus.Paused)
+            {
+                personalPlan.SubscriptionStatus = SubscriptionStatus.Paused;
+                personalPlan.PausedAt = DateTime.UtcNow;
+            }
+
+            if (status == SubscriptionStatus.Canceled)
+            {
+                personalPlan.SubscriptionStatus = SubscriptionStatus.Canceled;
             }
         }
     }

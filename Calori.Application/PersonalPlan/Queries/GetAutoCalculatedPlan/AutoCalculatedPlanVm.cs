@@ -3,6 +3,7 @@ using AutoMapper;
 using Calori.Application.Common.Mappings;
 using Calori.Domain.Models.ApplicationModels;
 using Calori.Domain.Models.CaloriAccount;
+using Calori.Domain.Models.Enums;
 
 namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
 {
@@ -20,6 +21,10 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
         
         public CaloriSlimmingPlan CurrentCaloriPlan { get; set; }
         public bool IsPaid { get; set; } = false;
+        public SubscriptionStatus Status { get; set; }
+        
+        public DateTime? PausedAt { get; set; }
+
         
         public string Message { get; set; }
         

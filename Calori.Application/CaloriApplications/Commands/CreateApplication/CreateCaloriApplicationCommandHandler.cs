@@ -83,9 +83,15 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             
             var dailyCalories = (int)(appBodyParameters.BMR * offset ?? 0);
 
-            if (dailyCalories - 750 > 2500 || dailyCalories <= 1250)
+            if (dailyCalories - 750 > 2500 || dailyCalories <= 1250 || 
+                goal < calculated.MinWeight || weight <= calculated.MinWeight)
             {
                 createApplicationResponse.Message = "There is no suitable diet.";
+                
+                await _emailService.SendEmailAsync(request.Email, 
+                    "There are no suitable diets for you.", 
+                    "We will contact you for more details.");
+                
                 return createApplicationResponse;
             }
             

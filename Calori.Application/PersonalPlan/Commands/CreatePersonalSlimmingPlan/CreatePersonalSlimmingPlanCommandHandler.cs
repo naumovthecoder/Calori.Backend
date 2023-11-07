@@ -26,12 +26,13 @@ namespace Calori.Application.PersonalPlan.Commands.CreatePersonalSlimmingPlan
             {
                 // TODO: ONLY TEST
                 // StartDate = new DateTime(2024, 1, 8),
-                StartDate = new DateTime(2023, 10, 1),
+                
+                StartDate = new DateTime(2024, 1, 8),
                 // TODO: ONLY TEST
                 
                 // TODO: ONLY TEST
                 //FinishDate = new DateTime(2024, 1, 8).AddDays(weeksToTarget * 7),
-                FinishDate = new DateTime(2023, 10, 1).AddDays(weeksToTarget * 7),
+                FinishDate = new DateTime(2024, 1, 8).AddDays(weeksToTarget * 7),
                 // TODO: ONLY TEST
                 
                 WeekNumber = 0,
@@ -43,8 +44,15 @@ namespace Calori.Application.PersonalPlan.Commands.CreatePersonalSlimmingPlan
                 BurnedThisWeek = request.BurnedThisWeek,
                 TotalBurned = request.TotalBurned,
                 WeeksToTarget = weeksToTarget - 1,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                SubscriptionStatus = SubscriptionStatus.NotStarted
             };
+
+            if (personalSlimmingPlan.StartDate < DateTime.Now)
+            {
+                personalSlimmingPlan.StartDate = DateTime.UtcNow;
+                personalSlimmingPlan.FinishDate = DateTime.UtcNow.AddDays(weeksToTarget * 7);
+            }
 
             _dbContext.PersonalSlimmingPlan.Add(personalSlimmingPlan);
             await _dbContext.SaveChangesAsync(cancellationToken);

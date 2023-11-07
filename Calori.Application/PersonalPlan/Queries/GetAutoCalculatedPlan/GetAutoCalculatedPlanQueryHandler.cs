@@ -44,17 +44,37 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
             var personalPlan = await _dbContext.PersonalSlimmingPlan
                 .FirstOrDefaultAsync(x => 
                     x.Id == application.PersonalSlimmingPlanId, cancellationToken);
+
+            if (personalPlan.SubscriptionStatus == SubscriptionStatus.Canceled)
+            {
+                return new AutoCalculatedPlanVm { Message = $"No active plan found. Status of last plan {personalPlan.SubscriptionStatus}" };
+            }
             
             if (personalPlan.StartDate == null || 
                 personalPlan.StartDate > currentDate)
             {
-                return new AutoCalculatedPlanVm { Message = "Your personal plan hasn't started yet." };
+                return new AutoCalculatedPlanVm
+                {
+                    StartDate = personalPlan.StartDate.Value,
+                    FinishDate = personalPlan.FinishDate.Value,
+                    Message = "Your personal plan hasn't started yet."
+                };
             }
             
             if (personalPlan.FinishDate != null && 
                 currentDate > (DateTime)personalPlan.FinishDate)
             {
                 return new AutoCalculatedPlanVm { Message = "Your personal plan is complete." };
+            }
+            
+            if (personalPlan.SubscriptionStatus == SubscriptionStatus.Paused)
+            {
+                if (personalPlan.PausedAt != null) currentDate = personalPlan.PausedAt.Value;
+            }
+            
+            if (personalPlan.SubscriptionStatus == SubscriptionStatus.Resumed)
+            {
+                if (personalPlan.PausedAt != null) currentDate = personalPlan.PausedAt.Value;
             }
             
             int currentWeekNumber = CalculateWeekNumber(

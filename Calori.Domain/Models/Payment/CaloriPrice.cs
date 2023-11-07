@@ -1,3 +1,5 @@
+using Calori.Domain.Models.CaloriAccount;
+
 namespace Calori.Domain.Models.Payment
 {
     public class CaloriPrice
@@ -9,10 +11,7 @@ namespace Calori.Domain.Models.Payment
         public string PriceId { get; set; }
         public string Name { get; set; }
         public string Price { get; set; }
-        
-        // 1 месяц
-        // 3 недели 
-        // 2 недели 
-        // 1 неделя
+        public int CaloriSlimmingPlanId { get; set; }
+        public CaloriSlimmingPlan CaloriSlimmingPlan { get; set; }
     }
 }

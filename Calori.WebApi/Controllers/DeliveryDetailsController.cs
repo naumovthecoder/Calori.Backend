@@ -48,6 +48,11 @@ namespace Calori.WebApi.Controllers
             var deliveryDetails = await _dbContext.CaloriShippingData
                 .FirstOrDefaultAsync(x => x.UserId == user.Id);
 
+            if (deliveryDetails == null)
+            {
+                return NoContent();
+            }
+
             var details = new Details
             {
                 Name = deliveryDetails.Name,

@@ -7,6 +7,7 @@ using Calori.Application.Interfaces;
 using Calori.Domain.Models;
 using Calori.Domain.Models.Auth;
 using Calori.Domain.Models.CaloriAccount;
+using Calori.Domain.Models.Enums;
 using Calori.Domain.Models.Payment;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -56,6 +57,8 @@ namespace Calori.Application.Payment.AfterPayment
                     .FirstOrDefaultAsync(d => 
                         d.UserId == user.Id, cancellationToken);
 
+                await UpdatePersonalPlanStatus(cancellationToken, user);
+
                 if (shipData != null)
                 {
                     return new AfterPaymentResponse
@@ -92,6 +95,19 @@ namespace Calori.Application.Payment.AfterPayment
             }
 
             return new AfterPaymentResponse();
+        }
+
+        private async Task UpdatePersonalPlanStatus(CancellationToken cancellationToken, ApplicationUser user)
+        {
+            var application = await _dbContext.CaloriApplications
+                .FirstOrDefaultAsync(a =>
+                    a.UserId.ToLower() == user.Id.ToLower(), cancellationToken);
+
+            var personalPlan = await _dbContext.PersonalSlimmingPlan
+                .FirstOrDefaultAsync(p =>
+                    p.Id == application.PersonalSlimmingPlanId, cancellationToken);
+
+            personalPlan.SubscriptionStatus = SubscriptionStatus.Active;
         }
     }
 }

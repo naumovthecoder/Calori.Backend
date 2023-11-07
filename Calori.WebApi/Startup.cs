@@ -51,12 +51,12 @@ namespace Calori.WebApi
 
             services.Configure<StripeOptions>(options =>
             {
-                options.PublishableKey = "pk_test_51O4pkFHNRk8vDVhu0nbecVWornSui8n7O3nmHjIPTzxdWQaJXXmaIuTlrB6H4Wz1uIBTNpG45OK3SLyL0ebclxhD00tRPVibKj";
-                options.SecretKey = "sk_test_51O4pkFHNRk8vDVhuW9t5LMlX1niwMspxiCbECH1JtH8LOqI8T4ZmwMMEwNtNye2goX5orybHrP1xDm2BQAc6CbMK00vAAVMLpn";
-                options.WebhookSecret = "whsec_0fba8cc180177c2f6eb0ddfccfe32430a0b5165f3da65362f4b7615e33b37a7";
-                options.BasicPrice = "price_1O7hQCHNRk8vDVhuTqLeBqO6";
-                options.ProPrice = "price_1O7hQCHNRk8vDVhu0d4qmdoG";
-                options.Domain = "https://localhost:5001";
+                options.PublishableKey = "pk_live_51O4pkFHNRk8vDVhuGPRbIcXmlj2T9JYVDqe2cP1nGHzpUdFACtoS3A6Oap2ne64HseJKZeN7dk9XuMNs4P3yiNdt00Us62n6uX";
+                options.SecretKey = "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";
+                options.WebhookSecret = "whsec_dei5OBJXfzAMCod9gO0QCpVlR6hpGWDy";
+                // options.BasicPrice = "price_1O7hQCHNRk8vDVhuTqLeBqO6";
+                // options.ProPrice = "price_1O7hQCHNRk8vDVhu0d4qmdoG";
+                // options.Domain = "https://localhost:5001";
             });
 
             services.AddApplication();
@@ -77,9 +77,9 @@ namespace Calori.WebApi
 
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
-                    "Data Source=testcaloriapi.ru;Initial Catalog=CaloriIdentity;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;"));
+                    "Data Source=localhost;Initial Catalog=CaloriIdentity;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;"));
             services.AddDbContext<CaloriDbContext>(options => options.UseSqlServer(
-                    "Data Source=testcaloriapi.ru;Initial Catalog=Calori;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;"));
+                    "Data Source=localhost;Initial Catalog=Calori;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;"));
 
             services.AddControllers();
             services.AddSwaggerGen(swagger =>

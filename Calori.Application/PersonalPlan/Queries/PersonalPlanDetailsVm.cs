@@ -2,6 +2,7 @@ using System;
 using AutoMapper;
 using Calori.Application.Common.Mappings;
 using Calori.Domain.Models.CaloriAccount;
+using Calori.Domain.Models.Enums;
 
 namespace Calori.Application.PersonalPlan.Queries
 {
@@ -21,6 +22,9 @@ namespace Calori.Application.PersonalPlan.Queries
         public int? WeeksToTarget { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public DateTime? PausedAt { get; set; }
+
+        public SubscriptionStatus? SubscriptionStatus { get; set; }
 
         public void Mapping(Profile profile)
         {
