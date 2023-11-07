@@ -32,49 +32,6 @@ namespace Calori.WebApi.Controllers
             _dbContext = context;
         }
         
-        // [HttpPost]
-        // public async Task<IActionResult> Index()
-        // {
-        //     var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-        //     try
-        //     {
-        //         var stripeEvent = EventUtility.ConstructEvent(json,
-        //             Request.Headers["Stripe-Signature"], endpointSecret);
-        //
-        //         Console.WriteLine(json);
-        //         
-        //         //ApplicationUser applicationUser;
-        //         // if (User != null)
-        //         // {
-        //         //     ApplicationUser applicationUser = await _userManager.FindByEmailAsync(User!.Identity!.Name);
-        //         //     if (applicationUser != null)
-        //         //     {
-        //         //         Console.WriteLine(applicationUser.Email);
-        //         //     }
-        //         //     else
-        //         //     {
-        //         //         Console.WriteLine("User not found");
-        //         //     }
-        //         // }
-        //         
-        //         // Handle the event
-        //         if (stripeEvent.Type == Events.PaymentIntentSucceeded)
-        //         {
-        //         }
-        //         // ... handle other event types
-        //         else
-        //         {
-        //             Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
-        //         }
-        //
-        //         return Ok();
-        //     }
-        //     catch (StripeException e)
-        //     {
-        //         return BadRequest();
-        //     }
-        // }
-        
         [HttpPost]
         public async Task<IActionResult> Index()
         {
@@ -115,44 +72,19 @@ namespace Calori.WebApi.Controllers
                     }
                 }
 
-                // if (stripeEvent.Type == Events.CustomerSubscriptionUpdated)
-                // {
-                //     Console.WriteLine(stripeEvent.Type);
-                //     var session = stripeEvent.Data.Object as Session;
-                //     if (session != null)
-                //     {
-                //         var stripeCustomerId = session.Customer.Id;
-                //
-                //         var user = await _dbContext.CaloriStripeCustomers
-                //             .FirstOrDefaultAsync(u =>
-                //                 u.StripeCustomerId.ToLower() == stripeCustomerId.ToLower());
-                //         
-                //         var application = await _dbContext.CaloriApplications
-                //             .FirstOrDefaultAsync(x => x.UserId.ToLower() == user.CaloriUserId.ToLower());
-                //
-                //         var entity = await _dbContext.PersonalSlimmingPlan
-                //             .FirstOrDefaultAsync(plan =>
-                //                 plan.Id == application.PersonalSlimmingPlanId);
-                //
-                //         var subsDetails = await _dbContext.SubscriptionDetails
-                //             .FirstOrDefaultAsync(d => d.Id == entity.SubscriptionDetailsId);
-                //
-                //         var subs = session.Subscription.Items.Data[0].Price.Id;
-                //
-                //         var price = await _dbContext.CaloriPrices.FirstOrDefaultAsync(p =>
-                //             p.PriceId.ToLower() == subs.ToLower());
-                //
-                //         subsDetails.CaloriPrice = price;
-                //         subsDetails.CaloriPriceId = price.PriceId;
-                //
-                //         await _dbContext.SaveChangesAsync(CancellationToken.None);
-                //     }
-                // }
-                // ... handle other event types
-                else
+                if (stripeEvent.Type == Events.CustomerSubscriptionPaused)
                 {
-                    //Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
+                    var session = stripeEvent.Data.Object as Session;
+                    if (session != null) Console.WriteLine(session.Subscription.Status);
                 }
+                
+                if (stripeEvent.Type == Events.CustomerSubscriptionDeleted)
+                {
+                    var session = stripeEvent.Data.Object as Session;
+                    if (session != null) Console.WriteLine(session.Subscription.Status);
+                }
+                
+                
 
                 return Ok();
             }
