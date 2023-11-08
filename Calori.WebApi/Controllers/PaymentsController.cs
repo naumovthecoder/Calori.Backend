@@ -71,10 +71,8 @@ namespace Calori.WebApi.Controllers
 
                     var options = new SessionCreateOptions
                     {
-                        // SuccessUrl = $"{this.options.Value.Domain}/success.html?session_id={{CHECKOUT_SESSION_ID}}",
-                        // CancelUrl = $"{this.options.Value.Domain}/canceled.html",
-                        SuccessUrl = "https://calori-c69d2.web.app/profile?payment_result=success",
-                        CancelUrl = "https://calori-c69d2.web.app/profile?payment_result=fail",
+                        SuccessUrl = "https://calori.fi/profile?payment_result=success",
+                        CancelUrl = "https://calori.fi/quiz",
                         PhoneNumberCollection = new SessionPhoneNumberCollectionOptions { Enabled = true },
                         CustomerEmail = appUser.Email,
                         ShippingAddressCollection = new SessionShippingAddressCollectionOptions
@@ -90,14 +88,12 @@ namespace Calori.WebApi.Controllers
                                 Quantity = 1,
                             },
                         },
-                        // AutomaticTax = new SessionAutomaticTaxOptions { Enabled = true },
                     };
                     var service = new SessionService(this.client);
                     try
                     {
                         var session = await service.CreateAsync(options); // async
                         Response.Headers.Add("Location", session.Url);
-                        // return new StatusCodeResult(303);
                         var result = new CreateCheckoutSessionResponse
                         {
                             SessionUrl = session.Url

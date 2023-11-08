@@ -20,11 +20,14 @@ namespace Calori.Application.Payment.AfterPayment
     {
         private readonly ICaloriDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailService _emailService;
 
-        public AfterPaymentCommandHandler(ICaloriDbContext context, UserManager<ApplicationUser> userManager)
+        public AfterPaymentCommandHandler(ICaloriDbContext context, 
+            UserManager<ApplicationUser> userManager, IEmailService emailService)
         {
             _userManager = userManager;
             _dbContext = context;
+            _emailService = emailService;
         }
 
         public async Task<AfterPaymentResponse> Handle(AfterPaymentCommand request,
@@ -83,6 +86,18 @@ namespace Calori.Application.Payment.AfterPayment
                 await _dbContext.CaloriShippingData.AddAsync(shippingData, cancellationToken);
 
                 await _dbContext.SaveChangesAsync(cancellationToken);
+
+                var message = $"Hi, {request.Name} \ud83d\udc4b\n\n" +
+                              $"Thank you for making your subscription with Calori. " +
+                              $"We’re thrilled to support you on your journey towards a healthier life." +
+                              $"\n\nHere are our next steps together:\n\n1\ufe0f\u20e3 " +
+                              $"You’ll get a call from us on the next work day. " +
+                              $"We’d love to get to know you better and fully understand your needs and goals.\n\n2\ufe0f\u20e3 " +
+                              $"You’ll start receiving your meals from 8.1.2024 - just in time to rock your New Year’s resolutions. \n\n" +
+                              $"Kind regards,\nCalori\n";
+
+                await _emailService.SendEmailAsync(request.UserEmail,
+                    $"Hi, from Calori \ud83d\udc4b", message);
 
             }
             catch (DbUpdateException e)

@@ -69,7 +69,8 @@ namespace Calori.WebApi.Controllers
                 {
                     PriceId = item.PriceId,
                     Name = item.Name,
-                    Price = item.Price
+                    Price = item.Price,
+                    DailyPrice = item.DailyPrice
                 }).ToList();
             
                 return Ok(response);
@@ -85,6 +86,7 @@ namespace Calori.WebApi.Controllers
             public string PriceId { get; set; }
             public string Name { get; set; }
             public string Price { get; set; }
+            public string DailyPrice { get; set; }
         }
     }
 }

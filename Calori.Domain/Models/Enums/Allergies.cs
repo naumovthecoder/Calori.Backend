@@ -17,6 +17,12 @@ namespace Calori.Domain.Models.Enums
         Fish = 4,
     
         [Display(Name = "Citrus")]
-        Citrus = 5
+        Citrus = 5,
+        
+        [Display(Name = "Vegeterian")]
+        Vegeterian = 6,
+    
+        [Display(Name = "Vegan")]
+        Vegan = 7
     }
 }

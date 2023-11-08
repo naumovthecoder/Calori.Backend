@@ -83,14 +83,46 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             
             var dailyCalories = (int)(appBodyParameters.BMR * offset ?? 0);
 
-            if (dailyCalories - 750 > 2500 || dailyCalories <= 1250 || 
-                goal < calculated.MinWeight || weight <= calculated.MinWeight)
+            bool isParametersCorrect = false;
+            
+            
+
+            if (request.Gender == CaloriGender.Female)
+            {
+                if (activity == CaloriActivityLevel.Inactive || activity == CaloriActivityLevel.Light)
+                {
+                    isParametersCorrect = weight is >= 40 and <= 150;
+                }
+                if (activity == CaloriActivityLevel.Moderate)
+                {
+                    isParametersCorrect = weight is >= 40 and <= 120;
+                }
+            }
+
+            if (request.Gender == CaloriGender.Male)
+            {
+                if (activity == CaloriActivityLevel.Inactive)
+                {
+                    isParametersCorrect = weight is >= 40 and <= 125;
+                }
+                if (activity == CaloriActivityLevel.Light)
+                {
+                    isParametersCorrect = weight is >= 40 and <= 100;
+                }
+                if (activity == CaloriActivityLevel.Moderate)
+                {
+                    isParametersCorrect = weight is >= 40 and <= 84;
+                }
+            }
+
+            if (!isParametersCorrect || dailyCalories - 750 > 2500 || dailyCalories <= 1250 || 
+                goal < calculated.MinWeight || weight <= calculated.MinWeight || height < 140)
             {
                 createApplicationResponse.Message = "There is no suitable diet.";
                 
                 await _emailService.SendEmailAsync(request.Email, 
                     "There are no suitable diets for you.", 
-                    "We will contact you for more details.");
+                    "Your input is outside the range that we built into our calculator. \n\nPlease get in touch with us at: info@calori.fi");
                 
                 return createApplicationResponse;
             }
@@ -167,10 +199,9 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
                 createApplicationResponse.Message = 
                     "Due to your food allergies, we are unable to offer a diet that suits your needs.";
 
-                await _emailService.SendEmailAsync(request.Email, 
-                    "There are no suitable diets.", 
-                    "It is recommended that a patient with allergies to certain foods develop an individualized diet, " +
-                    "eliminating allergens, and consult with a physician or dietitian to ensure a balanced diet.");
+                await _emailService.SendEmailAsync(request.Email,
+                    $"Hi, {request.Email} \ud83d\udc4b",
+                    "Thank you for making your meal plan with Calori.\n\nSadly, we can’t accommodate people with one of your dietary restrictions at this time.\n\nBut we’ve been working hard on developing different meal plans. You’ll be the first one to know once we have plans that match your needs \ud83d\ude4c\n\nKind regards,\nCalori\n");
             }
             
             _dbContext.CaloriApplications.Add(application);

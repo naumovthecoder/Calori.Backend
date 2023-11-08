@@ -75,7 +75,6 @@ namespace Calori.WebApi
             services.AddSingleton<IEmailService, EmailService.EmailService>();
             services.AddScoped<ICaloriDbContext>(provider => provider.GetService<CaloriDbContext>());
 
-
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
                     "Data Source=localhost;Initial Catalog=CaloriIdentity;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;"));
             services.AddDbContext<CaloriDbContext>(options => options.UseSqlServer(

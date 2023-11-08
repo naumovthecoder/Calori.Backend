@@ -24,7 +24,7 @@ namespace Calori.WebApi.Controllers
         private readonly ICaloriDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        const string endpointSecret = "whsec_0fba8cc180177c2f6eb0ddfccfe32430a0b5165f3da65362f4b7615e33b37a70";
+        const string endpointSecret = "whsec_dei5OBJXfzAMCod9gO0QCpVlR6hpGWDy";
 
         public WebhookController(IMapper mapper, ICaloriDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -97,7 +97,6 @@ namespace Calori.WebApi.Controllers
                         // Handle the error, e.g., return an error message
                         return BadRequest($"Subscription cancellation failed: {ex.Message}");
                     }
-                    if (session != null) Console.WriteLine(session.Subscription.Status);
                 }
                 
                 if (stripeEvent.Type == Events.CustomerSubscriptionDeleted)

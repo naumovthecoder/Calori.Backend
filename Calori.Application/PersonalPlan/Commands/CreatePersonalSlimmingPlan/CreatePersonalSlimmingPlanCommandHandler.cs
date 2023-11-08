@@ -119,8 +119,10 @@ namespace Calori.Application.PersonalPlan.Commands.CreatePersonalSlimmingPlan
         {
             var rations = new[] { 1250, 1500, 1750, 2000, 2250, 2500, };
 
-            var minCaloric = currentCalori - 700;
-            var maxCaloric = currentCalori - 450;
+            // 3000
+            
+            var minCaloric = currentCalori - 700; // 2300
+            var maxCaloric = currentCalori - 450; // 2550
 
             var targetRation = 0;
 

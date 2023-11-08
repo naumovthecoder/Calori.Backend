@@ -45,6 +45,9 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
                 .FirstOrDefaultAsync(x => 
                     x.Id == application.PersonalSlimmingPlanId, cancellationToken);
 
+            var userPayments = await _dbContext.UserPayments
+                .FirstOrDefaultAsync(x => x.UserId == application.UserId, cancellationToken);
+
             if (personalPlan.SubscriptionStatus == SubscriptionStatus.Canceled)
             {
                 return new AutoCalculatedPlanVm { Message = $"No active plan found. Status of last plan {personalPlan.SubscriptionStatus}" };
@@ -55,6 +58,7 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
             {
                 return new AutoCalculatedPlanVm
                 {
+                    IsPaid = userPayments.IsPaid,
                     StartDate = personalPlan.StartDate.Value,
                     FinishDate = personalPlan.FinishDate.Value,
                     Message = "Your personal plan hasn't started yet."
