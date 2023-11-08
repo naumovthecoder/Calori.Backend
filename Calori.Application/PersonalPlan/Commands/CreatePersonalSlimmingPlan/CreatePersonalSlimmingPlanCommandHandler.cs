@@ -29,7 +29,7 @@ namespace Calori.Application.PersonalPlan.Commands.CreatePersonalSlimmingPlan
                 
                 StartDate = new DateTime(2024, 1, 8),
                 // TODO: ONLY TEST
-                
+                //StartDate = new DateTime(2023, 10, 8),
                 // TODO: ONLY TEST
                 //FinishDate = new DateTime(2024, 1, 8).AddDays(weeksToTarget * 7),
                 FinishDate = new DateTime(2024, 1, 8).AddDays(weeksToTarget * 7),

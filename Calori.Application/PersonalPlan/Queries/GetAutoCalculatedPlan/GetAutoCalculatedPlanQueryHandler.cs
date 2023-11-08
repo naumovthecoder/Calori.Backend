@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -40,10 +41,15 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
             
             var application = await _dbContext.CaloriApplications
                 .FirstOrDefaultAsync(x => x.UserId == request.UserId, cancellationToken);
-
+            
             var personalPlan = await _dbContext.PersonalSlimmingPlan
                 .FirstOrDefaultAsync(x => 
                     x.Id == application.PersonalSlimmingPlanId, cancellationToken);
+            
+            if (personalPlan == null)
+            {
+                return new AutoCalculatedPlanVm();
+            }
 
             var userPayments = await _dbContext.UserPayments
                 .FirstOrDefaultAsync(x => x.UserId == application.UserId, cancellationToken);
@@ -56,13 +62,22 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
             if (personalPlan.StartDate == null || 
                 personalPlan.StartDate > currentDate)
             {
-                return new AutoCalculatedPlanVm
+                var plan = new AutoCalculatedPlanVm();
+                plan.Status = SubscriptionStatus.NotStarted;
+                if (userPayments == null)
                 {
-                    IsPaid = userPayments.IsPaid,
-                    StartDate = personalPlan.StartDate.Value,
-                    FinishDate = personalPlan.FinishDate.Value,
-                    Message = "Your personal plan hasn't started yet."
-                };
+                    plan.IsPaid = false;
+                }
+                else
+                {
+                    plan.IsPaid = userPayments.IsPaid;
+                }
+                
+                plan.StartDate = personalPlan.StartDate.Value;
+                plan.FinishDate = personalPlan.FinishDate.Value;
+                plan.Message = "Your personal plan hasn't started yet.";
+                
+                return plan;
             }
             
             if (personalPlan.FinishDate != null && 
@@ -124,6 +139,7 @@ namespace Calori.Application.PersonalPlan.Queries.GetAutoCalculatedPlan
             entity.FinishDate = (DateTime)finishDate!;
             entity.CurrentCaloriPlan = currentCaloriPlan;
             entity.Message = string.Empty;
+            if (personalPlan.SubscriptionStatus != null) entity.Status = personalPlan.SubscriptionStatus.Value;
 
             if (userPayment == null)
             {

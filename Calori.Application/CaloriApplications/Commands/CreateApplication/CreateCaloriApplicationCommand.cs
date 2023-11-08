@@ -16,5 +16,7 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
         public string Email { get; set; } = string.Empty;
         public List<int>? Allergies { get; set; }
         public string AnotherAllergy { get; set; } = string.Empty;
+        
+        public string Phone { get; set; }
     }
 }

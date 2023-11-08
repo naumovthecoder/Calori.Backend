@@ -14,7 +14,7 @@ namespace Calori.WebApi.Models
         public int Gender { get; set; }
 
         [Required(ErrorMessage = "Weight is required.")]
-        [Range(30, 150, ErrorMessage = "Your weight must be between 30kg and 150kg.")]
+        [Range(30, 180, ErrorMessage = "Your weight must be between 30kg and 150kg.")]
         public decimal Weight { get; set; }
 
         [Required(ErrorMessage = "Height is required.")]
@@ -36,6 +36,9 @@ namespace Calori.WebApi.Models
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string Email { get; set; } = string.Empty;
+        
+        [Phone(ErrorMessage = "Invalid phone number.")]
+        public string Phone { get; set; } = string.Empty;
 
         public List<int>? Allergies { get; set; }
         public string AnotherAllergy { get; set; } = string.Empty;

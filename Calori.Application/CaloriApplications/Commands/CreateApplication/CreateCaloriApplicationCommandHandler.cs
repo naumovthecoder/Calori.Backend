@@ -120,6 +120,49 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             {
                 createApplicationResponse.Message = "There is no suitable diet.";
                 
+                await _dbContext.ApplicationBodyParameters.AddAsync(appBodyParameters, cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                
+                
+                
+                var ap = new CaloriApplication
+                {
+                    GenderId = request.Gender,
+                    Weight = request.Weight,
+                    Height = request.Height,
+                    Age = request.Age,
+                    Goal = request.Goal,
+                    Email = request.Email,
+                    ActivityLevelId = request.Activity,
+                    AnotherAllergy = request.AnotherAllergy,
+                    CreatedAt = DateTime.UtcNow,
+                    ApplicationBodyParametersId = appBodyParameters.Id,
+                    DailyCalories = dailyCalories
+                };
+
+                if (request.Phone != null)
+                {
+                    ap.Phone = request.Phone;
+                }
+                
+                await _dbContext.CaloriApplications.AddAsync(ap, cancellationToken);
+
+                if (allergies != null)
+                {
+                    foreach (var allergyId in allergies)
+                    {
+                        var applicationAllergy = new ApplicationAllergy
+                        {
+                            ApplicationId = ap.Id,
+                            Allergy = (Allergies)allergyId
+                        };
+            
+                        _dbContext.ApplicationAllergies.Add(applicationAllergy);
+                    }
+                }
+                
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                
                 await _emailService.SendEmailAsync(request.Email, 
                     "There are no suitable diets for you.", 
                     "Your input is outside the range that we built into our calculator. \n\nPlease get in touch with us at: info@calori.fi");
@@ -146,6 +189,11 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
             application.ApplicationBodyParametersId = appBodyParameters.Id;
             application.DailyCalories = dailyCalories;
             application.Ration = closestRation;
+            
+            if (request.Phone != null)
+            {
+                application.Phone = request.Phone;
+            }
             
             var deficitOnWeek = dailyCalories - closestRation;
             var burnedOnWeek = (deficitOnWeek * 1000) / 8000;

@@ -76,9 +76,9 @@ namespace Calori.WebApi
             services.AddScoped<ICaloriDbContext>(provider => provider.GetService<CaloriDbContext>());
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
-                    "Data Source=localhost;Initial Catalog=CaloriIdentity;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;"));
+                    "Data Source=api.calori.fi;Initial Catalog=CaloriIdentity;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;"));
             services.AddDbContext<CaloriDbContext>(options => options.UseSqlServer(
-                    "Data Source=localhost;Initial Catalog=Calori;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;"));
+                    "Data Source=api.calori.fi;Initial Catalog=Calori;User ID=sa;Password=nExa92cF;TrustServerCertificate=True;"));
 
             services.AddControllers();
             services.AddSwaggerGen(swagger =>
