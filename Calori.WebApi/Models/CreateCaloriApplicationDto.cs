@@ -37,7 +37,6 @@ namespace Calori.WebApi.Models
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string Email { get; set; } = string.Empty;
         
-        [Phone(ErrorMessage = "Invalid phone number.")]
         public string Phone { get; set; } = string.Empty;
 
         public List<int>? Allergies { get; set; }

@@ -62,7 +62,7 @@ namespace Calori.Application.Auth.Commands.Register
             result.Token = new JwtSecurityTokenHandler().WriteToken(token);
             result.User = user;
             
-            string subject = "Test Email from Calori.App";
+            string subject = $"Hi from Calori \ud83d\udc4b";
             string body = $"Welcome to Calori.App!\nYour Login - {user.Email}\nPassword - {password}";
             
             try

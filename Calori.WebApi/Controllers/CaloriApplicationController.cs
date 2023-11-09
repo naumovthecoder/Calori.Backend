@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -42,8 +43,14 @@ namespace Calori.WebApi.Controllers
             {
                 return StatusCode((int)HttpStatusCode.Conflict, "User with this email already exists.");
             }
+            
+            var request = HttpContext.Request;
+            string acceptLanguageHeader = request.Headers["Accept-Language"];
+            var cultureInfo = CultureInfo.GetCultureInfoByIetfLanguageTag(acceptLanguageHeader);
+
 
             var command = _mapper.Map<CreateCaloriApplicationCommand>(dto);
+            command.CultureInfo = cultureInfo;
             var application = await Mediator.Send(command);
             return Ok(application);
         }
@@ -75,10 +82,15 @@ namespace Calori.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UpdateApplicationResult>> Update([FromBody] UpdateApplicationDto dto)
         {
+            var request = HttpContext.Request;
+            string acceptLanguageHeader = request.Headers["Accept-Language"];
+            var cultureInfo = CultureInfo.GetCultureInfoByIetfLanguageTag(acceptLanguageHeader);
+
             string userEmail = User!.Identity!.Name;
             var command = _mapper.Map<UpdateApplicationCommand>(dto);
             // command.ApplicationUser = User;
             command.IdentityUserEmail = userEmail;
+            command.CultureInfo = cultureInfo;
             var result = await Mediator.Send(command);
             return result;
         }

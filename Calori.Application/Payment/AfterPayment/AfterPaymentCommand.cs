@@ -1,3 +1,4 @@
+using System.Globalization;
 using Calori.Domain.Models.Payment;
 using MediatR;
 
@@ -17,5 +18,6 @@ namespace Calori.Application.Payment.AfterPayment
         public string Country { get; set; }
         public string State { get; set; }
         public long? AmountTotal { get; set; }
+        public CultureInfo CultureInfo { get; set; }
      }
 }

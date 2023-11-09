@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Claims;
 using Calori.Domain.Models.ApplicationModels;
 using Calori.Domain.Models.Auth;
@@ -18,8 +19,11 @@ namespace Calori.Application.CaloriApplications.Commands.UpdateApplication
         public CaloriActivityLevel? Activity { get; set; }
         public int? Goal { get; set; }
         public string Email { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
         public List<int>? Allergies { get; set; }
         public string AnotherAllergy { get; set; } = string.Empty;
         public string IdentityUserEmail { get; set; }
+        
+        public CultureInfo CultureInfo { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using Calori.Domain.Models.ApplicationModels;
 using Calori.Domain.Models.Enums;
 using MediatR;
@@ -16,6 +17,7 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
         public string Email { get; set; } = string.Empty;
         public List<int>? Allergies { get; set; }
         public string AnotherAllergy { get; set; } = string.Empty;
+        public CultureInfo CultureInfo { get; set; }
         
         public string Phone { get; set; }
     }

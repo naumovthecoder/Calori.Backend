@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using AutoMapper;
 using Calori.Application.CaloriApplications.Commands.UpdateApplication;
 using Calori.Application.Common.Mappings;
@@ -37,6 +38,8 @@ namespace Calori.WebApi.Models
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string Email { get; set; } = string.Empty;
+        
+        public string Phone { get; set; } = string.Empty;
 
         public List<int>? Allergies { get; set; }
         public string AnotherAllergy { get; set; } = string.Empty;

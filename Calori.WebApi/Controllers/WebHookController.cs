@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using Microsoft.AspNetCore.Mvc;
@@ -49,12 +50,17 @@ namespace Calori.WebApi.Controllers
                     var session = stripeEvent.Data.Object as Session;
                     if (session != null)
                     {
+                        var request = HttpContext.Request;
+                        string acceptLanguageHeader = request.Headers["Accept-Language"];
+                        var cultureInfo = CultureInfo.GetCultureInfoByIetfLanguageTag(acceptLanguageHeader);
+
+                        
                         var customerDetails = session.CustomerDetails;
                         
                         var userAddress = customerDetails.Address;
 
                         var afterPaymentCommand = new AfterPaymentCommand();
-                        
+                        afterPaymentCommand.CultureInfo = cultureInfo;
                         afterPaymentCommand.SessionId = session.Id;
                         afterPaymentCommand.UserEmail = customerDetails.Email;
                         afterPaymentCommand.Name = customerDetails.Name;

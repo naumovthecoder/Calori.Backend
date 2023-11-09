@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
@@ -7,7 +8,6 @@ using AutoMapper;
 using Calori.Application.CaloriApplications.CalculatorService;
 using Calori.Application.CaloriApplications.Commands.CreateApplication;
 using Calori.Application.Interfaces;
-using Calori.Application.PersonalPlan.Commands.CreatePersonalSlimmingPlan;
 using Calori.Application.PersonalPlan.Commands.UpdatePersonalSlimmingPlan;
 using Calori.Application.Services.UserService;
 using Calori.Domain.Models.ApplicationModels;
@@ -113,8 +113,28 @@ namespace Calori.Application.CaloriApplications.Commands.UpdateApplication
                     user.Email = request.Email;
                     await _userManager.UpdateAsync(user);
                     
-                    string subject = "Test Email from Calori.App";
+                    string subject = $"Hi, \ud83d\udc4b";
                     string body = $"Welcome to Calori.App!\nYour Login - {user.Email}\nPassword - {password}";
+                    
+                    var message = "";
+                    // var culture = CultureInfo.CurrentUICulture;
+                    //
+                    //
+                    // if (culture.Name.ToLower() == "fi")
+                    // {
+                    //     message = $"Hei, {request.Email} \ud83d\udc4b\n\nKiitos, että loit ateriasuunnitelmasi Calorin kanssa." +
+                    //               $"\n\nValitettavasti emme tällä hetkellä pysty huomioimaan erityisruokavalioitasi." +
+                    //               $"\n\nTyöskentelemme kuitenkin ahkerasti kehittääksemme uusia, erilaisia ateriasuunnitelmia. " +
+                    //               $"Olet ensimmäisten joukossa kuulemassa, kun meillä on tarjolla suunnitelmia jotka vastaavat " +
+                    //               $"tarpeitasi \ud83d\ude4c\n\nYstävällisin terveisin,\nCalori";
+                    // }
+                    // else if (culture.Name.ToLower() == "en")
+                    // {
+                    //     message = $"Hi, {request.Email} \ud83d\udc4b\n\nThank you for making your meal plan with Calori." +
+                    //               $"\n\nSadly, we can’t accommodate people with one of your dietary restrictions at this time." +
+                    //               $"\n\nBut we’ve been working hard on developing different meal plans. You’ll be the first one " +
+                    //               $"to know once we have plans that match your needs \ud83d\ude4c\n\nKind regards,\nCalori";
+                    // }
                     
                     try
                     {
@@ -154,6 +174,12 @@ namespace Calori.Application.CaloriApplications.Commands.UpdateApplication
             entity.Age = age;
             entity.Goal = goal;
             entity.Email = request.Email;
+
+            if (entity.Phone != null)
+            {
+                entity.Phone = request.Phone;
+            }
+            
             entity.ActivityLevelId = activity;
             entity.CreatedAt = DateTime.UtcNow;
             entity.AnotherAllergy = anotherAllergy;
