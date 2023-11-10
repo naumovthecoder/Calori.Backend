@@ -167,27 +167,29 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
                 var culture = request.CultureInfo.TwoLetterISOLanguageName;
 
                 var message = "";
+                var subject = "";
                 
                 if (culture.ToLower() == "fi")
                 {
-                    message = $"Hei, {request.Email} \ud83d\udc4b\n\nKiitos, että loit ateriasuunnitelmasi Calorin kanssa." +
+                    message = $"Hei, \ud83d\udc4b\n\nKiitos, että loit ateriasuunnitelmasi Calorin kanssa." +
                               $"\n\nValitettavasti emme tällä hetkellä pysty huomioimaan erityisruokavalioitasi." +
                               $"\n\nTyöskentelemme kuitenkin ahkerasti kehittääksemme uusia, erilaisia ateriasuunnitelmia. " +
                               $"Olet ensimmäisten joukossa kuulemassa, kun meillä on tarjolla suunnitelmia jotka vastaavat " +
                               $"tarpeitasi \ud83d\ude4c\n\nYstävällisin terveisin,\nCalori";
+                    subject = $"Hei, \ud83d\udc4b";
                 }
                 else
                 {
-                    message = $"Hi, {request.Email} \ud83d\udc4b\n\nThank you for making your meal plan with Calori." +
+                    message = $"Hi, \ud83d\udc4b\n\nThank you for making your meal plan with Calori." +
                               $"\n\nSadly, we can’t accommodate people with one of your dietary restrictions at this time." +
                               $"\n\nBut we’ve been working hard on developing different meal plans. You’ll be the first one " +
                               $"to know once we have plans that match your needs \ud83d\ude4c\n\nKind regards,\nCalori";
+                    subject = $"Hi, \ud83d\udc4b";
                 }
 
                 await _emailService.SendEmailAsync(request.Email,
-                    $"Hi, {request.Email} \ud83d\udc4b", message);
-                Console.WriteLine(culture);
-                Console.WriteLine(message);
+                    subject, message);
+                
                 return createApplicationResponse;
             }
             
@@ -272,25 +274,28 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
                 var culture = request.CultureInfo.TwoLetterISOLanguageName;
 
                 var message = "";
+                var subject = "";
                 
                 if (culture.ToLower() == "fi")
                 {
-                    message = $"Hei, {request.Email} \ud83d\udc4b\n\nKiitos, että loit ateriasuunnitelmasi Calorin kanssa." +
+                    message = $"Hei, \ud83d\udc4b\n\nKiitos, että loit ateriasuunnitelmasi Calorin kanssa." +
                               $"\n\nValitettavasti emme tällä hetkellä pysty huomioimaan erityisruokavalioitasi." +
                               $"\n\nTyöskentelemme kuitenkin ahkerasti kehittääksemme uusia, erilaisia ateriasuunnitelmia. " +
                               $"Olet ensimmäisten joukossa kuulemassa, kun meillä on tarjolla suunnitelmia jotka vastaavat " +
                               $"tarpeitasi \ud83d\ude4c\n\nYstävällisin terveisin,\nCalori";
+                    subject = $"Hei, \ud83d\udc4b";
                 }
                 else
                 {
-                    message = $"Hi, {request.Email} \ud83d\udc4b\n\nThank you for making your meal plan with Calori." +
+                    message = $"Hi, \ud83d\udc4b\n\nThank you for making your meal plan with Calori." +
                               $"\n\nSadly, we can’t accommodate people with one of your dietary restrictions at this time." +
                               $"\n\nBut we’ve been working hard on developing different meal plans. You’ll be the first one " +
                               $"to know once we have plans that match your needs \ud83d\ude4c\n\nKind regards,\nCalori";
+                    subject = $"Hi, \ud83d\udc4b";
                 }
 
                 await _emailService.SendEmailAsync(request.Email,
-                    $"Hi, {request.Email} \ud83d\udc4b", message);
+                    subject, message);
             }
             
             _dbContext.CaloriApplications.Add(application);

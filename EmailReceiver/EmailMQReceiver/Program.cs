@@ -71,8 +71,8 @@ namespace Calori.EmailRabbotMQReceiver
 
         public static void SendEmail(EmailContent email)
         {
-            var smtpServer = "smtp.google.com";
-            var smtpPort = 465;
+            var smtpServer = "smtp.gmail.com";
+            var smtpPort = 587;
             var smtpUsername = "info@calori.fi";
             var smtpPassword = "=D,@sLs&:kaRja=Y";
 
