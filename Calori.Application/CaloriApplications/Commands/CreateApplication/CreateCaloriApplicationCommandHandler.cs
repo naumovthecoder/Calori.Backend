@@ -147,6 +147,7 @@ namespace Calori.Application.CaloriApplications.Commands.CreateApplication
                 }
                 
                 await _dbContext.CaloriApplications.AddAsync(ap, cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 if (allergies != null)
                 {
